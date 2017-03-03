@@ -8,7 +8,6 @@ var _jquery2 = _interopRequireDefault(_jquery);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 console.log(_jquery2.default.fn.jquery); // <1>
-console.log(String.prototype.padStart);
 
 (0, _jquery2.default)(document).ready(function () {
   (0, _jquery2.default)('#logs').text('OK'); // <2>

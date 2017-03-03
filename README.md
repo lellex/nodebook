@@ -9,44 +9,52 @@
 Écriture    | Relecture  | Chapitre
 :----------:|:----------:|:--------
             |            | [Préface de David Bruant][foreword]
-:memo:      |:x:         | [Avant-propos][preamble]
+:ok:        |:ok:        | [Avant-propos][preamble]
 :ok:        |:ok:        | [Introduction à Node.js][ch01]
-:ok:        |:x:         | [Premiers pas avec Node.js][ch02]
-:construction: |:x:      | [Développer un service web][ch03]
-:memo:      |:x:         | [Développer pour les navigateurs web][ch04]
-:x:         |:x:         | [Développer un automate de traitement de données][ch05]
-:x:         |:x:         | [Développer une application native][ch06]
-:x:         |:x:         | [Héberger, déployer et monitorer][ch07]
-:x:         |:x:         | _Annexe A_ : [Sélection de modules npm][a01]
+:ok:        |            | [Premiers pas avec Node.js][ch02]
+:construction: |         | [Développer une application web][ch03]
+:ok:        |            | [Développer pour les navigateurs web][ch04]
+            |            | [Développer un automate de traitement de données][ch05]
+:memo:      |            | [Héberger, déployer et monitorer][ch07]
+:construction: |         | _Annexe A_ : [Sélection de modules npm][a01]
 
 # Installation
 
 Cette commande télécharge une copie du livre, les exemples associés ainsi que leurs dépendances pour une utilisation hors-ligne.
 
 ```bash
-npm i -g nodebook@latest
-```
+$ npm install --global nodebook@latest
+$ nodebook --help
+Commands:
+  chapter <number> [install|examples]  Installe, ouvre les examples ou
+                                       positionne dans un chapitre.
+  read                                 Démarre la lecture du livre au format
+                                       HTML
 
-*Remarque* : les dépendances de chaques chapitres sont à installer séparément.
+Options:
+  --help  Show help                                                    [boolean]
 
-```bash
-cd chapter-01/examples && npm install
-# etc.
+Examples:
+  nodebook chapter 4          Positionne le terminal dans le chapitre 4
+  nodebook chapter 4 install  Installe les dépendances du chapitre 4
+  nodebook chapter 4 open     Ouvre le chapitre 4 dans un explorateur de
+                                fichiers
 ```
 
 # Participation
 
-Le moyen le plus simple de contribuer est de proposer une *pull request*.
-L'interface en ligne de GitHub est la solution la plus simple.
+Le moyen le plus simple de contribuer est de proposer une _pull request_.
+L'**interface en ligne de GitHub** est de loin la plus simple à prendre en main.
 
 ## Installation
 
-Il est possible de travailler sur une copie locale de l'épreuve :
+Il est possible de travailler sur une copie locale de l'épreuve en la dupliquant avec Git. [git-lfs](https://git-lfs.github.com/) est nécessaire à la récupération des fichiers volumineux.
 
 ```bash
-git clone https:/github.com/oncletom/nodebok && cd nodebook
-npm install
-make install
+$ git clone --single-branch https:/github.com/oncletom/nodebok
+$ cd nodebook
+$ npm install
+$ git lfs pull # si vous avez installé git-lfs après avoir cloné le dépôt
 ```
 
 ## Prévisualiser
@@ -54,7 +62,7 @@ make install
 Un serveur local est également disponible pour prévisualiser vos modifications sans être connecté à Internet.
 
 ```bash
-npm start
+$ PORT=3000 npm start
 ```
 
 Des extensions [Chrome][adoc-chrome] et [Firefox][adoc-firefox] se chargeront du rendu en temps réel dans le navigateur. Dans les options de l'extension, prenez soin d'autoriser le chargement des fichiers et utilisez le mode `safe` pour autoriser le rendu des exemples de code :
@@ -70,13 +78,13 @@ Le code des exemples est vérifié à l'aide d'[ESLint](http://eslint.org/).
 La commande suivante vérifiera que la syntaxe ECMAScript n'entraine pas d'effet secondaires indésirables.
 
 ```bash
-npm test
+$ npm test
 ```
 
 ## Génération de l'épreuve HTML
 
 ```bash
-make build && open ./public
+$ make build-html && open ./dist
 ```
 
 
@@ -90,9 +98,9 @@ Le livre sera disponible en rayons lorsque le Bon à Tirer (BAT) aura été sign
 
 # Mentions légales
 
-*Node.js — bonnes pratiques pour la programmation JavaScript applicative, universelle et modulaire* est un ouvrage rédigé par [Thomas Parisot](https://oncletom.io) et publié aux éditions [Eyrolles](http://www.eyrolles.fr).
+_Node.js — bonnes pratiques pour la programmation JavaScript applicative, universelle et modulaire_ est un ouvrage rédigé par [Thomas Parisot](https://oncletom.io) et publié aux éditions [Eyrolles](http://www.eyrolles.fr).
 
-L’épreuve est soumise à la licence [Creative Commons NC-BY-SA][cc-nc-by-sa] (*Attribution, Non-Commercial, Share Alike*).
+L’épreuve est soumise à la licence [Creative Commons NC-BY-SA][cc-nc-by-sa] (_Attribution, Non-Commercial, Share Alike_).
 
 Les exemples de code sont soumis à une licence MIT et le cas échéant, à une license spécifiée par l’auteur du programme.
 

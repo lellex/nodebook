@@ -1,12 +1,17 @@
+:chapterNumber: 1
+:sourceDir: ./examples
+:sourceSample: timeout.js
 :nodeCurrentVersion: v6
 :npmCurrentVersion: v4
+:sectnums:
+:toc-title: Table des matières
 :revdate: {docdate}
 :imagesdir: {indir}
 ifdef::env[]
 :imagesdir: .
 endif::[]
 
-== [ChapitreNumero]#1# Introduction à Node.js
+= Introduction à Node.js
 
 Node.js génère beaucoup de discussions, d'intérêts et d'envies. +
 Dans ce chapitre, nous allons faire le point sur ce qu'est Node.js pour mieux comprendre dans quel cambouis nous allons plonger les mains.
@@ -19,6 +24,8 @@ Dans ce chapitre, nous allons faire le point sur ce qu'est Node.js pour mieux co
 - Pourquoi autant de _hype_ ?
 ====
 
+[abstract]
+--
 Node.js est-il un langage de programmation ?
 Node.js est-il un _framework_ JavaScript ?
 Qu'en restera-t-il une fois la frénésie retombée ?
@@ -29,17 +36,14 @@ Surtout, il vous permettra de comprendre les choix techniques à l'origine des f
 
 Qu'on se le dise : *un langage de programmation en lui-même n'a jamais résolu quelconque problème*.
 Cela reste avant tout une affaire de compétences et d'expérience, <<avoiding-node,cf. Pourquoi éviter Node ?>>.
+--
 
-[TIP]
-.[RemarquePreTitre]#Remarque# Versions de Node et npm
-====
-Le contenu de ce chapitre se réfère aux versions de *Node {nodeCurrentVersion}* et *npm {npmCurrentVersion}*.
-====
-
+include::../resources/tip-versions.adoc[]
+include::../resources/tip-examples.adoc[]
 
 toc::[]
 
-=== Node.js : la plate-forme JavaScript côté serveur
+== Node.js : la plate-forme JavaScript côté serveur
 
 Node.js n'est pas un langage de programmation. Node.js n'est pas non plus un _framework_ JavaScript. *Node.js est une plate-forme de programmation JavaScript*. +
 La différence entre ces trois désignations peut sembler subtile, futile voire inutile mais le terme *plate-forme* est la véritable nature de Node.
@@ -53,7 +57,7 @@ Si _Netscape_ a depuis fermé ses portes, _Rhino_ a permis l'émergence de proje
 
 Entre temps le langage JavaScript évolue, le _Web 2.0_ émerge des cendres de la première bulle Internet et d'autres initiatives émergent dans les années 2000 comme _APE_ (_Ajax Push Engine_, [URL]#http://ape-project.org/#).
 Elles mettent également en œuvre JavaScript côté serveur.
-JavaScript était surtout un choix logique de partage de code entre client et serveur pour Comet, le précurseur des <<../chapter-04/index.adoc#websockets,Websockets>>.
+JavaScript était surtout un choix logique de partage de code entre client et serveur pour Comet, le précurseur des <<../chapter-04/index.adoc#websockets,WebSockets>>.
 
 [TIP]
 .[RemarquePreTitre]#Glossaire# Comet
@@ -64,9 +68,9 @@ Parmi ces techniques, on retrouve le _long polling_, consistant à conserver une
 ====
 
 [TIP]
-.[RemarquePreTitre]#Glossaire# Websockets
+.[RemarquePreTitre]#Glossaire# WebSockets
 ====
-_Websockets_ est un protocole basé sur TCP.
+_WebSockets_ est un protocole basé sur TCP.
 
 Il permet de maintenir une connexion HTTP active entre un client et un serveur et d'y faire transiter les données de manière bidirectionnelle.
 
@@ -95,7 +99,7 @@ Ce code est lu par le _runtime_ Node qui le transmet à la VM JavaScript. Enfin,
 
 Pour comprendre comment Node a opté pour cette approche, retournons en 2009, lorsque son créateur **Ryan Dahl** cherchait à résoudre élégamment un problème de performance de programmation.
 
-=== Historique du projet Node.js
+== Historique du projet Node.js
 
 En 2006, _Ryan Dahl_ est un étudiant américain en troisième année de doctorat de mathématiques.
 Si son but initial était de devenir professeur de mathématiques, il prend la décision de ne pas terminer sa thèse et d'entreprendre un voyage au Chili.
@@ -117,7 +121,7 @@ Nous sommes alors en 2008 et le site de partage de photos Flickr innove avec un 
 
 
 .Interface du service Flickr après et avant l'introduction du téléversement progressif.
-image::images/7112862941_3b8c8e9916_o_d.png[align="center", link="https://www.flickr.com/photos/schill/7112862941/",scaledwidth="85%"]
+image::images/7112862941_3b8c8e9916_o_d.png[align="center", link="https://www.flickr.com/photos/schill/7112862941/",width="85%"]
 
 [TIP]
 .[RemarquePreTitre]#Lien# Annonce du nouveau Flickr Uploadr
@@ -141,8 +145,8 @@ Ryan admet que JavaScript dispose des caractéristiques idéales même s'il n'es
 Il manque juste aux machines virtuelles JavaScript la capacité d'accéder à des _sockets_, au système de fichiers et à d'autres fonctions système.
 
 Ryan quitte alors son travail, s'inspire de ses travaux de modules non bloquants pour Nginx et s'affaire pendant six mois à marier JavaScript, V8 et l'environnement du système d'exploitation.
-De ces efforts nait Node.js. +
-Il effectue une démonstration de link:https://gist.github.com/ry/a3d0bbbff196af633995[serveur IRC écrit en 400 lignes de JavaScript] lors de la link:https://www.youtube.com/watch?v=ztspvPYybIY[conférence JSConf.eu 2009] suscite l'enthousiasme et attire l'attention.
+De ces efforts naît Node.js. +
+Il effectue une démonstration de link:https://gist.github.com/ry/a3d0bbbff196af633995[serveur IRC écrit en 400 lignes de JavaScript] lors de la link:https://www.youtube.com/watch?v=ztspvPYybIY[conférence JSConf.eu 2009] qui suscite l'enthousiasme et attire l'attention.
 
 L'entreprise américaine _Joyent_ l'embauche à plein temps pour continuer le développement de Node.
 Ils pressentent que la plate-forme Node répond à leurs projets de _datacenter_ et d'hébergement.
@@ -161,7 +165,7 @@ Peut-être un élément qui figurera dans les livres d'histoire !
 - [URL]#https://www.youtube.com/watch?v=SAc0vQCC6UQ#
 ====
 
-=== Les raisons du succès
+== Les raisons du succès
 
 En 2009, la tension et l'attention autour de JavaScript sont énormes.
 La mode du tout _Ajax_ et des _mashups_ s'est estompée mais une chose en est ressortie : JavaScript n'a plus à rougir ni à être relégué au rang de sous-langage.
@@ -179,14 +183,14 @@ Dès lors, un simple `npm install node-playground` suffit pour inclure le module
 Partager un module est tout aussi simple puisqu'un simple `npm publish` le rend disponible à tous en un instant.
 
 npm devient une telle pierre angulaire qu'il est inclus par défaut dans l'installation de Node à partir de novembre 2011, lors de la publication de Node 0.6.3.
-La communauté Node et ses contributeurs ont fait le reste du travail en fournissant un écosystème de modules riche et varié : frameworks, templating, drivers de bases de données, serveurs HTTP, serveurs Websockets, préprocesseurs CSS, CoffeeScript, parseurs, proxy, serveurs de log, librairies de tests, langages de _templating_, etc.
+La communauté Node et ses contributeurs ont fait le reste du travail en fournissant un écosystème de modules riche et varié : frameworks, templating, drivers de bases de données, serveurs HTTP, serveurs WebSockets, préprocesseurs CSS, CoffeeScript, parseurs, proxy, serveurs de log, librairies de tests, langages de _templating_, etc.
 
 Malgré ses défauts de jeunesse, Node réussit également le tour de force de la performance : la recette de l'accès non bloquant aux ressources aurait-elle fonctionné ?
 À en croire les personnes ayant migré vers Node pour ces raisons, la réponse est *oui*.
 
-=== Pourquoi choisir Node.js ?
+== Pourquoi choisir Node.js ?
 
-Il y a plusieurs raisons d'utiliser Node, en complément ou remplacement d'un langage existant.
+Il y a plusieurs raisons d'utiliser Node, en complément ou en remplacement d'un langage existant.
 Il est préférable que cela soit avant tout une *volonté ou une curiosité et que cela se fasse en considérant la plate-forme Node pour ce qu'elle est* et non pour ce que vous voudriez qu'elle soit.
 
 Si l'on tient compte des raisons historiques de la création de Node, il est évident que Node est tout désigné dès lors que l'on parle d'*applications à nombreuses actions concurrentes*. +
@@ -210,7 +214,7 @@ Enfin, Node est un *environnement adapté à l'apprentissage et l'amélioration 
 Vous disposez de la maîtrise de la version de Node, des modules employés et n'avez pas à vous soucier de quelconque compatibilité de version de JavaScript.
 
 [[avoiding-node]]
-=== Pourquoi éviter Node.js ?
+== Pourquoi éviter Node.js ?
 
 S'il y a des raisons d'utiliser ou d'adopter Node, l'inverse est également vrai.
 Il faut toutefois noter que la majorité des raisons sont liées à une _culture_ et des _compétences_ déjà en place dans un environnement donné.
@@ -236,30 +240,30 @@ Les module `bignumber.js` ([URL]#https://npmjs.com/bignumber.js#) et `bignum` ([
 
 Enfin si vous croyez que Node va *résoudre les problèmes par magie* — qu'ils soient de nature technique, de performance ou de compétences* — c'est une croyance dont il va falloir se séparer.
 
-=== Écosystème
+== Écosystème
 
 Un certain nombre d'acteurs gravitent autour de Node.
-Le modèle qui en émerge est assez unique : la majorité des développements initiaux était financée par *Joyent* suite à l'embauche de Ryan Dahl.
+Le modèle qui en émerge est assez unique : la majorité des développements initiaux était financée par _Joyent_ suite à l'embauche de Ryan Dahl.
 
 L'écosystème contribuant au développement de la plate-forme a évolué d'un faible nombre d'entreprises privées vers une fondation non-commerciale impliquant plusieurs dizaines d'individus, la plupart financés par leur employeur.
 
-En 2017, après avoir traversé des périodes incertaines, l'avenir de Node est au beau fixe avec plus de 1200 contributeurs à la plateforme et plus de 400 000 paquets publics hébergés sur le registre _npm_.
+En 2017, après avoir traversé des périodes incertaines, l'avenir de Node est au beau fixe avec plus de 1200 contributeurs à la plate-forme et plus de 400 000 paquets publics hébergés sur le registre _npm_.
 
 [[joyent]]
-==== Joyent
+=== Joyent
 
 Joyent est une entreprise américaine fondée en 2004.
 Elle proposait à l'origine des services de collaborations en ligne : documents, calendriers, e-mails, etc.
 
 Elle se lance sur le marché de l'hébergement fin 2005 par le biais d'une acquisition-fusion.
-Parmi ses clients, on peut dénombrer le site de Ruby on Rails (société Basecamp), WordPress.com (société Automattic) ou encore l'historique site _A List Apart_.
+Parmi ses clients, on peut dénombrer le site de Ruby on Rails (société Basecamp), WordPress.com (société Automattic) ou encore le site historique _A List Apart_.
 
-Depuis 2009, Joyent s'est orientée et spécialisée dans les infrastructures et plate-formes à la demande et à haute performance.
-Elle se spécialise dans les solutions dites temps réel pour les réseaux sociaux, applications mobiles et compagnies de jeux vidéo en ligne.
+Depuis 2009, Joyent s'est orienté et s'est spécialisé dans les infrastructures et plate-formes à la demande et à haute performance.
+L'entreprise se spécialise dans les solutions dites temps réel pour les réseaux sociaux, applications mobiles et compagnies de jeux vidéo en ligne.
 
 En avril 2011, Joyent enregistre _Node.js_ et son logo en tant que marque déposée.
 
-En février 2015, Joyent transfère la gestion de Node à la <<node-foundation,Node.js Foundation>>.
+En février 2015, Joyent transfère la gestion de Node à la <<node-foundation,Node.js Foundation>>. La société _Joyent_ reste propriétaire de la marque _Node.js_ et de son logo.
 
 [TIP]
 .[RemarquePreTitre]#Lien# Annonce du dépôt de marque
@@ -272,18 +276,16 @@ Ryan Dahl, alors développeur actif de Node, annonce le dépôt de marque par l'
 anchor:node-foundation[]
 
 [[node-foundation]]
-==== Node.js Foundation
+=== Node.js Foundation
 
 La _Node.js Foundation_ est l'organe de gouvernance officiel du projet Node depuis juin 2015.
 Il s'agit d'une organisation à but non lucratif faisant partie elle-même de la link:http://collabprojects.linuxfoundation.org/[Linux Foundation], au même titre que des projets comme _Open Container_, _Let's Encrypt_ ou _Xen_.
 
-La gouvernance de la fondation est effectuée par un comité de direction technique, constituée de membres ayant prouvé une expertise technique dans le _design_ de Node et de sa communauté.
+La gouvernance de la fondation est effectuée par un comité de direction technique, constitué de membres ayant prouvé une expertise technique dans le _design_ de Node et de sa communauté.
 
 La tâche première de la fondation a été d'opérer la fusion entre la base de code de _Node_ et d'<<iojs,io.js>>, Node v4.0.0, en septembre 2015.
 
-La société _Joyent_ reste propriétaire de la marque _Node.js_ et de son logo.
-
-==== npm
+=== npm
 
 _npm_ est une dénomination qui abrite plusieurs concepts : un *outil en ligne de commande*, un *registre de modules* ainsi qu'une *entreprise privée*.
 
@@ -305,18 +307,18 @@ Auparavant, il fallait installer le module _npm_ séparément.
 ====
 
 [[npm-inc]]
-==== npm, Inc.
+=== npm, Inc.
 
 Isaacs Schlueter a été embauché par Joyent en septembre 2010 et a succédé à Ryan Dahl dans la gestion du projet Node de janvier 2012 jusqu’à janvier 2014.
 
-_npm, Inc_ est une entreprise privée américaine fondée en janvier 2014 par Isaacs Schlueter, directement après son départ de Joyent. Le but de _npm, Inc_ est fournir des solutions professionnelles basées sur _npm_ tout en soutenant l’effort open source et les coûts d’infrastructure du registre _npm_.
+_npm, Inc_ est une entreprise privée américaine fondée en janvier 2014 par Isaacs Schlueter, directement après son départ de Joyent. Le but de _npm, Inc_ est de fournir des solutions professionnelles basées sur _npm_ tout en soutenant l’effort open source et les coûts d’infrastructure du registre _npm_.
 
 Elle lève 2,6 millions de dollars en février 2014 pour élaborer une nouvelle architecture du registre _npm_ ainsi que pour mettre en place une stratégie commerciale, notamment les modules privés.
 
 La société _npm, Inc_ détient la marque _npm_, _npm, Inc_ et le _logo npm_.
 
 [[iojs]]
-==== io.js
+=== io.js
 
 _io.js_ est un _fork_ de Node initié par la communauté Node en réaction à la main-mise de Joyent sur le développement et la communication erratique de la plate-forme.
 
@@ -335,7 +337,7 @@ Le projet _io.js_ s'arrête en 2015 suite à l'émergence de la nouvelle gouvern
 - [URL]#https://nodejs.org/en/blog/announcements/foundation-v4-announce/#
 ====
 
-==== Nodejitsu
+=== Nodejitsu
 
 _Nodejitsu_ est une entreprise privée américaine fondée en 2010.
 Elle vise à fournir des solutions professionnelles autour de Node en tant que _Platform as a Service_ (_PaaS_) ainsi qu'avec des dépôts _npm_ privés. +
@@ -360,7 +362,7 @@ Cette initiative a suscité une controverse dans la mesure où l’opération s�
 - [URL]#http://web.archive.org/web/20160506191542/https://scalenpm.nodejitsu.com/#
 ====
 
-==== Node Security Platform
+=== Node Security Platform
 
 Le _Node Security Platform_ ([URL]#https://nodesecurity.io/# — anciennement _Node Security Project_) est un projet à but lucratif soutenu par la société américaine _&yet_ ([URL]#https://andyet.com/#).
 Il a été initié au début de l'année 2013.
@@ -377,7 +379,7 @@ Cela concerne aussi bien la déclaration des vulnérabilités que leur résoluti
 Nous parlerons plus en détail des modules développés par la _Node Security Platform_ et de leur inclusion dans le cycle de vie d'un projet dans le <<../chapter-07/index.adoc#security,Chapitre 7>>.
 
 [[governance]]
-==== Qui gère Node.js ?
+=== Qui gère Node.js ?
 
 Joyent est une entreprise privée qui a été responsable de Node depuis l'embauche de son créateur — Ryan Dahl —.
 Cette gérance privée du projet open source a régulièrement fait grincer des dents, notamment en entretenant un climat d'incertitude sur la pérennité à long terme de la plate-forme.
@@ -397,7 +399,7 @@ On distingue deux communautés fortes au sein de Node :
 
 Intéressons-nous maintenant à l'architecture technique de la plate-forme Node.
 
-=== Architecture technique
+== Architecture technique
 
 Le terme _plate-forme_ prend tout son sens lorsque l'on se penche sur l'architecture de Node.
 
@@ -412,9 +414,9 @@ L'architecture se décompose en plusieurs couches, partant du plus haut niveau (
 5. Système d'exploitation
 
 .Via [URL]#https://twitter.com/busyrich/status/496344440559378432#
-image::images/event-loop.svg[align="center", link="https://twitter.com/busyrich/status/496344440559378432",scaledwidth="85%"]
+image::images/event-loop.svg[align="center", link="https://twitter.com/busyrich/status/496344440559378432",width="85%"]
 
-==== API Node
+=== API Node
 
 L'API Node correspond à des _modules CommonJS_ écrits en JavaScript (voir ci-après) : client et serveur TCP, accès au système de fichiers, lecture de DNS, streams, buffers etc.
 
@@ -437,7 +439,7 @@ Le module CommonJS `fs` expose des fonctions ouvrant l'accès au système de fic
 
 Ce code trivial en apparence masque en réalité des milliers de lignes de code écrites en JavaScript et C++.
 
-==== Modules CommonJS
+=== Modules CommonJS
 
 Le projet _CommonJS_ débute en janvier 2009.
 
@@ -456,13 +458,7 @@ L'exemple suivant illustre avec du code ce qu'est un module CommonJS.
 [source,javascript]
 .increment-module.js
 ----
-const privateValue = 0;
-
-module.exports = () => {
-  privateValue++;
-
-  return privateValue;
-};
+include::{sourceDir}/increment-module.js[]
 ----
 
 La spécification _Module_ de CommonJS fait usage de la portée lexicale (_lexical scope_) pour isoler ce qui appartient au module (la variable `privateValue`) et ce qu'il expose (une fonction incrémentant et retournant la variable privée).
@@ -490,7 +486,7 @@ Le site officiel de CommonJS documente différentes spécifications vouées à p
 - [URL]#http://www.commonjs.org/#
 ====
 
-==== Interpréteur Node
+=== Interpréteur Node
 
 L'interpréteur Node est un programme écrit en C++.
 
@@ -526,7 +522,7 @@ Le parcourir permet de mieux comprendre la magie de son fonctionnement… ou d'a
 ====
 
 [[v8]]
-==== Machine Virtuelle V8
+=== Machine Virtuelle V8
 
 La machine virtuelle V8 est un compilateur JavaScript focalisé sur les performances et la sécurité.
 V8 a été créé par Google pour interpréter JavaScript dans son navigateur web Chrome.
@@ -546,7 +542,7 @@ Cette documentation est accompagnée d'un guide pour intégrer V8 dans d'autres 
 - [URL]#https://developers.google.com/v8/#
 ====
 
-==== libuv
+=== libuv
 
 _libuv_ ([URL]#http://libuv.org/#)est une librairie C++ focalisée sur l'accès aux ressources système de manière non bloquante.
 
@@ -567,7 +563,7 @@ Le code source de _libuv_ est disponible sur GitHub. Le parcourir permet de mieu
 ====
 
 [[event-loop]]
-==== Boucle événementielle
+=== Boucle événementielle
 
 La boucle événementielle (_Event Loop_) est un mécanisme d'exécution des tâches apporté par _libuv_ et déléguée au système d'exploitation.
 Elle s'inspire très fortement du modèle de boucle événementielle telle qu'implémentée dans les navigateurs web.
@@ -637,7 +633,7 @@ Ceci reste valide tant que la boucle événementielle n'est pas implémentée na
 ====
 
 
-=== Philosophie de développement
+== Philosophie de développement
 
 Node a connu une *forte croissance depuis 2012*.
 Cela concerne aussi bien le nombre de modules publiés sur le registre npm que le nombre de contributeurs.
@@ -646,7 +642,7 @@ C'est sans compter le nombre d'articles faisant l'éloge de la plate-forme et le
 Il n'aura fallu que deux ans pour que Node devienne vraiment stable et utilisable en production.
 
 [[semver]]
-==== Versioning sémantique
+=== Versioning sémantique
 
 Le versioning sémantique définit deux concepts importants :
 
@@ -710,7 +706,7 @@ Ils en sont venus à proposer plus ou moins sérieusement les notions de *versio
 
 
 [[node-lifecycle]]
-==== Cycle de développement de Node
+=== Cycle de développement de Node
 
 La vitesse et la croissance sont des facteurs propices à l'immaturité et à l'instabilité d'une plateforme et de son écosystème.
 
@@ -718,7 +714,7 @@ Le développement de la plate-forme Node prend en compte ces facteurs afin de *s
 
 La notion de versions supportées à long terme (_LTS_) a été introduite pour aider à maitriser et anticiper les migrations vers des versions majeures ultérieures.
 
-image::images/schedule.png[align="center",scaledwidth="85%",link="https://github.com/nodejs/LTS/blob/master/schedule.png"]
+image::images/schedule.png[align="center",width="85%",link="https://github.com/nodejs/LTS/blob/master/schedule.png"]
 
 Les deux versions annuelles suivent un cycle différent :
 
@@ -750,12 +746,12 @@ Référez-vous à lui pour des informations plus à jour que l'épreuve papier d
 =====
 
 
-==== Node et son API
+=== Node et son API
 
 Node communique un indice de stabilité pour chacune de ses API publiques selon une échelle discrète graduée de 0 à 5.
 
 .Example avec l'api `punycode`, dont le statut est marqué comme déprécié depuis la v7.
-image::images/node-api-deprecation.png[align="center",scaledwidth="85%"]
+image::images/node-api-deprecation.png[align="center",width="85%"]
 
 Cette échelle se décompose de la manière suivante :
 
@@ -776,7 +772,7 @@ La documentation de l'API Node est disponible au format HTML sur le site officie
 - [URL]#https://nodejs.org/api/#
 ====
 
-==== Modules npm
+=== Modules npm
 
 *Node baigne dans la philosophie UNIX* : le mécanisme de modules incite à suivre le principe de responsabilité unique et de séparation des principes.
 
@@ -788,7 +784,7 @@ Ils n'ont pas à avoir connaissance de leur statut de dépendance : ils doivent 
 Pour garantir au maximum la stabilité des dépendances, le _versioning sémantique_ aka _SemVer_ a fait son apparition.
 Il explicite l'algorithme employé par _npm_ lors du processus d'installation et de mise à jour.
 
-=== Conclusion
+== Conclusion
 
 Nous venons d'en apprendre davantage sur les *origines de Node*, les différentes parties prenantes dans son développment mais aussi sa *philosophie* en terme de _conception_, de _distribution_ et d'_évolution_.
 

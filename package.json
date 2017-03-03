@@ -2,12 +2,12 @@
   "name": "nodebook",
   "version": "0.4.0",
   "description": "Node.js, bonnes pratiques de développement.",
-  "bin": "server.js",
+  "bin": "./bin/cli.js",
   "scripts": {
-    "format": "prettier-eslint --write chapter*/**/*.js",
+    "format": "prettier-eslint --write 'chapter*/**/*.js'",
     "lint": "eslint --fix '**/*.js'",
     "test": "exit 0",
-    "posttest": "npm run format && npm run lint",
+    "posttest": "npm run lint",
     "prepush": "npm t"
   },
   "engines": {
@@ -30,6 +30,7 @@
   "homepage": "https://oncletom.io/node.js",
   "devDependencies": {
     "eslint": "^3.13.1",
+    "eslint-plugin-react": "^6.10.0",
     "finalhandler": "^0.4.0",
     "get-port": "^2.1.0",
     "husky": "^0.13.1",
@@ -71,5 +72,10 @@
         "global"
       ]
     }
+  },
+  "dependencies": {
+    "opn": "^4.0.2",
+    "update-notifier": "^2.1.0",
+    "yargs": "^6.6.0"
   }
 }

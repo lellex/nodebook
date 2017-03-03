@@ -1,13 +1,17 @@
+:chapterNumber: 5
+:sourceDir: ./examples
+:sourceSample: TODO.js
 :nodeCurrentVersion: v6
 :npmCurrentVersion: v4
+:toc-title: Table des matières
+:sectnums:
 :revdate: {docdate}
-:sourceDir: ./examples
 :imagesdir: {indir}
 ifdef::env[]
 :imagesdir: .
 endif::[]
 
-= [ChapitreNumero]#5# Développer un automate de traitement de données
+= Développer un automate de traitement de données
 
 Ce chapitre nous apprendra à automatiser le traitement d'un fichier CSV
 hébergé sur une plateforme _open data_ pour faciliter l'accès à l'information.
@@ -27,10 +31,11 @@ Ce chapitre est en plein chantier.
 - Interface en ligne de commande (_CLI_)
 ====
 
-[TIP]
-.[RemarquePreTitre]#Remarque# Versions de Node et npm
-====
-Le contenu de ce chapitre se réfère aux versions de *Node {nodeCurrentVersion}* et *npm {npmCurrentVersion}*.
-====
+[abstract]
+--
+--
+
+include::../resources/tip-versions.adoc[]
+include::../resources/tip-examples.adoc[]
 
 toc::[]
