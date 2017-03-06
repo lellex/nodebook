@@ -2407,14 +2407,14 @@ Un excellent moyen pour gérer du code _asynchrone_ et _parallèle_ est le _patt
 
 === Event
 
-Les _callbacks_ nous permettent d'agir lorsqu'un exécution asynchrone est en mesure de nous retourner un résultat ou une erreur. +
+Les _callbacks_ nous permettent d'agir lorsqu'une exécution asynchrone est en mesure de nous retourner un résultat ou une erreur. +
 Leur fonctionnement est toutefois encapsulé et limité à la portée de la portion de code dans laquelle nous pouvons insérer des instructions.
 Difficile donc d'exposer notre logique applicative en dehors de ces _callbacks_.
 
 Les événements nous offrent un tel mécanisme d'exposition, en permettant la connexion de plusieurs écouteurs (_listeners_).
 Plusieurs composants indépendants peuvent alors utiliser les résultats pour leurs propres besoins.
 
-Il s'agit d'un _pattern_ particulièrement intéressant adresser ces besoins :
+Il s'agit d'un _pattern_ particulièrement intéressant lorsqu'on rencontre ces besoins :
 
 - gérer des cas de figure ayant trait à une progression ;
 - gérer des cas de figure plus complexes qu'une logique binaire de réussite ou d'échec ;
