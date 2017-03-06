@@ -376,7 +376,7 @@ Son but est triple :
 Le projet met à disposition des _services_ et des _modules_ tout en cherchant à impliquer la communauté Node dans le processus.
 Cela concerne aussi bien la déclaration des vulnérabilités que leur résolution ou l'éducation des développeurs à la sécurité.
 
-Nous parlerons plus en détail des modules développés par la _Node Security Platform_ et de leur inclusion dans le cycle de vie d'un projet dans le <<../chapter-07/index.adoc#security,Chapitre 7>>.
+Nous apprendrons à protéger nos projects avec _Node Security Platform_ dans la section <<../chapter-06/index.adoc#security,surveiller la santé de l’application>> du Chapitre 6.
 
 [[governance]]
 === Qui gère Node.js ?
@@ -680,7 +680,7 @@ L'utilisation de certains caractères permet d'exprimer des *plages de compatibi
 
 Cette syntaxe est notamment employée pour spécifier les plages de mises à jour  acceptées pour les paquets `npm`.
 Cela permet entre autres de bénéficier de mises à jour de manière consentante (_opt-in_) à chaque installation ou mise à jour de vos applications.
-Vous en apprendrez davantage sur diverses opérations de routine de vos applications dans le <<../chapter-03/index.adoc,chapitre 3>>, notamment la <<../chapter-03/index.adoc#npm-outdated,vérification de l'état des dépendances>>.
+Vous en apprendrez davantage sur diverses opérations de routine de vos applications dans le <<../chapter-02/index.adoc,chapitre 2>>, notamment la <<../chapter-02/index.adoc#npm-outdated,vérification de l'état des dépendances>>.
 
 [TIP]
 .[RemarquePreTitre]#Outil# Calculateur de version

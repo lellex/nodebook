@@ -233,7 +233,7 @@ docker run -ti --rm node:6-slim
 
 L'intégralité des versions et architectures supportées est disponible sur le _Docker Hub_ : [URL]#https://hub.docker.com/_/node/#
 
-Nous nous repencherons sur Docker dans la <<../chapter-07/index.adoc#docker,section _Déploiement_ du chapitre 7>>.
+Nous nous repencherons sur Docker dans la section  <<../chapter-06/index.adoc#immutable-deploy,section _Déploiement immutable_>> du Chapitre 6.
 
 === Compiler depuis les sources
 
@@ -254,7 +254,7 @@ cd node-v6.9.4
 
 Les instructions pouvant varier fortement d'un système d'exploitation à l'autre, consultez les dépendances et instructions complètes à cette adresse [URL]#https://github.com/nodejs/node/wiki/installation#.
 
-== Outils de développement
+=== Outils de développement
 
 Programmer pour Node revient dans la majorité des cas à écrire du JavaScript.
 Donc même si un éditeur de texte suffit, il est intéressant de connaître l'offre en outillage autour de Node et du développement front-end.
@@ -264,13 +264,12 @@ Les logiciels présentés dans les pages suivantes couvrent un large spectre de 
 Ceci a pour but de vous aider à piocher au plus près de vos goûts, à défaut de continuer à utiliser votre logiciel habituel.
 
 [[atom]]
-=== Atom
+==== Atom
 
 image::images/atom.png[align="center",width="85%"]
 
 _Atom_ est un éditeur de code open-source, multilingue et multi plate-forme dont le développement a été initié par la société _GitHub_.
 Le logiciel est basé sur _Electron_, un environnent d'exécution d'applications de bureau reposant sur Node et HTML5.
-Le développement de telles applications est abordé dans le <<../chapter-06/index.adoc#,chapitre 6>>.
 
 _Atom_ offre un écosystème de paquets pour étendre les fonctionnalités de l'éditeur à la carte.
 L'expérience de développement sous Node en est ainsi facilitée grâce à des paquets dédiés à l'auto-complétion, un débogueur intégré mais aussi une vérification syntaxique sur mesure. +
@@ -280,7 +279,7 @@ Une sélection de paquets vous attend dans l'<<../appendix-a.adoc#atom,annexe A>
 - [URL]#https://atom.io/packages/#
 
 [[vs-code]]
-=== Visual Studio Code
+==== Visual Studio Code
 
 image::images/visual-studio-code.png[align="center",width="85%"]
 
@@ -298,7 +297,7 @@ _Visual Studio Code_ offre également un écosystème de paquets pour étendre l
 - [URL]#https://code.visualstudio.com/Docs/runtimes/nodejs#
 
 [[webstorm]]
-=== WebStorm
+==== WebStorm
 
 image::images/webstorm.png[align="center",width="85%"]
 
@@ -321,7 +320,7 @@ Vous pouvez demander à bénéficier d'une licence gratuite sous réserve d'une 
 ====
 
 [[vs-ide]]
-=== Visual Studio IDE
+==== Visual Studio IDE
 
 image::images/visual-studio.png[align="center",width="85%"]
 
@@ -522,9 +521,214 @@ Et finalement la valeur contenue dans la deuxième colonne avec `awk` :
 $ w | head -n 3 | tail -n 1 | awk '{ print $2 }'
 ----
 
-Vous pourrez en savoir plus sur le sujet dans la sections <<../chapter-03/index.adoc#streams, streams du chapitre 3>>.
+Vous pourrez en savoir plus sur le sujet dans la section <<streams,streams>> de ce même chapitre.
 
 Maintenant que nous avons vu tous ces concepts, reposons-nous le cerveau en parlant JavaScript.
+
+== Invoquer Node.js
+
+C'est bien beau de parler d'histoire, d'architecture et d'interpréteur mais concrètement, comment exécuter du code écrit pour Node ?
+
+La plate-forme Node fournit un exécutable système : `node`. C'est lui qui digèrera votre code, préparé à l'avance ou non :
+
+- `node` invoquera le _REPL_, un interpréteur interactif ;
+- `node votre-script.js` invoquera le dit script.
+
+[[node-repl]]
+=== REPL
+
+Un _REPL_ est un interpréteur interactif exécuté dans votre terminal.
+Une fois invoqué, toutes les instructions écrites dans le terminal seront interprétées dès que vous presserez la touche kbd:[ENTRÉE]
+
+L'intérêt principal d'utiliser le _REPL_ est de prototyper rapidement du code ; code que l'on pourra éventuellement sauvegarder en tapant kbd:[.+S+A+V+E+ENTRÉE].
+
+Autre exemple : vous écrivez un programme qui nécessite que l'utilisateur saisisse lui-même du code à faire interpréter par Node.
+On pourrait penser à un programme en ligne de commande éducatif ou encore à une interface web qui commanderait un _REPL_ distant.
+
+image::images/node-repl.png[align="center",width="85%"]
+
+Le _REPL_ lui-même est écrit en ECMAScript.
+Il est disponible dans le module Node natif `repl` dont la documentation est disponible à l'adresse suivante : [URL]#https://nodejs.org/api/repl.html#.
+
+[[node-exec]]
+=== Exécution de script
+
+L'exécution d'un script est très certainement l'invocation la plus classique de Node.
+
+Node tente de charger et d'exécuter le fichier mentionné en argument de l'exécutable `node`.
+Le processus Node reste actif tant que l'_Event Loop_ a des instructions à traiter dans le futur.
+
+Un certain nombre d'options sont acceptées par l'exécutable et modifient son comportement en conséquent :
+
+- `node debug votre-script.js` : active le mode débogage ;
+- `NODE_ENV=production node votre-script.js` : transmet une variable d'environnement au processus et est accessible sous la forme `process.env.NODE_ENV`.
+
+image::images/node-exec.png[align="center",width="85%"]
+
+Pour connaître l'ensemble des options disponibles de l'exécutable Node, tapez `node --help` dans votre terminal.
+Plusieurs options pourraient vous intéresser :
+
+- `-e` (ou `--eval`) : évalue du code ;
+- `-p` (ou `--print`) : évalue et affiche le code ;
+- `-r` (ou `--require`) : inclue un module ;
+- `--harmony` (ou tout sous-ensemble de type `--harmony-xx`) : active des fonctionnalités expérimentales ;
+- `--v8-options` : passe des options à la <<../chapter-01.adoc#v8,VM V8>>.
+
+L'option `-p` est idéale pour évaluer du code en une ligne et visualier un résultat :
+
+----
+$ node -p 'Date()';
+Tue Jan 24 2017 12:42:02 GMT+0100 (CET)
+
+$ FIRST_NAME='Thomas' node -p '`Bonjour ${process.env.FIRST_NAME}`'
+Bonjour Thomas
+----
+
+[[node-sh]]
+=== Script shell
+
+Une autre alternative est de créer un fichier exécutable et de spécifier Node en tant qu'interpréteur.
+C'est une opération utile pour rendre un programme accessible s'il est situé dans le `$PATH` système ou pour rendre un programme accessible lors de l'installation globale d'un _paquet npm_, entre autres.
+
+Pour qu'un fichier soit rendu exécutable, nous devons nous assurer de deux choses :
+
+. du _mode exécutable_ du fichier ;
+. de la présence de l'entête _shebang_.
+
+Il faut pour cela respectivement :
+
+. ajouter le marqueur `x` avec le programme `chmod` ;
+. démarrer le fichier par `#!<chemin vers l'interpréteur node>`.
+
+Voici le contenu d'un fichier (non suffixé avec l'extension `.js`) qui affiche les arguments passé à ce dit-script :
+
+[source,javascript]
+.print-args
+----
+include::{sourceDir}/print-args[]
+----
+<1> Demande au programme `/usr/bin/env` de retourner le chemin vers l'exécutable système `node` ;
+<2> Plus d'informations sur cette syntaxe dans la section <<primitive-destructuring,décomposition>> de ce même chapitre.
+
+Le bloc suivant rend le fichier exécutable et l'exécute avec des arguments :
+
+----
+$ chmod +x print-args
+$ ./print-args Affiche moi
+[ 'Affiche', 'moi' ]
+----
+
+[[npm-scripts]]
+==== Scripts npm
+
+L'utilisation de _scripts npm_ permet d'invoquer Node de manière légèrement différente tout en masquant la complexité des scripts au niveau du fichier `package.json`.
+
+L'invocation d'un _script npm_ peut se faire de deux manières :
+
+. `npm <script-natif>` pour les scripts natifs à _npm_ (`start`, `publish`, `test` etc.) ;
+. `npm run <script>` pour les scripts additionnels définis par l'utilisateur.
+
+----
+$ npm start
+# équivalent de `npm run start`
+----
+
+Cette action exécute la commande contenue dans la section `scripts.start` du fichier `package.json` :
+
+[source]
+.package.json
+----
+{
+  "name": "nodebook",
+  ...
+  "scripts": {
+    "start": "node server.js"
+  }
+}
+----
+
+L'avantage de cette approche est double :
+
+- uniformisation du _workflow_ au sein de tous les projets ;
+- npm modifie la *variable système `$PATH`*.
+
+Ce dernier point est important.
+Cela signifie que l'exécution d'un _script npm_ rend disponible les exécutables contenus dans le répertoire `./node_modules/.bin` (voir l'encadré _Répertoires et exécutables_ de la section <<install,Installation>>).
+
+[source,javascript]
+.package.json
+----
+{
+  "name": "nodebook",
+  ...
+  "scripts": {
+    "test": "eslint ." // <1>
+  },
+  "devDependencies": {
+    "eslint": "^3.0.0"
+  }
+}
+----
+<1> Équivaut donc à `./node_modules/.bin/eslint ./src`.
+
+=== Arguments d'invocation
+
+Les arguments correspondent à un tableau de chaînes exposé par la propriété `argv` de la <<api-process,variable globale `process`>>.
+
+Cette approche est recommandée pour *créer du code générique* et le *personnaliser avec des arguments*.
+Le script suivant illustre leur lecture par l'interpréteur Node :
+
+[source,javascript]
+.config/argv.js
+----
+include::{sourceDir}/argv.js[]
+----
+
+Ce script peut être invoqué de la manière suivante :
+
+----
+$ node argv.js -y 2014 2012 --title 'fromage baguette' #<1>
+----
+<1> Affiche `["-y", "2014", "2012", "--title", "fromage baguette"]`.
+
+Des librairies sont disponibles pour *transformer les arguments en objets JavaScript*, configurer des valeurs par défaut, de valider les valeurs, de les rendre obligatoire et même de générer automatiquement une aide à l'utilisateur.
+
+Nous aborderons ces techniques avancées dans le <<../chapter-05/index.adoc#,Chapitre 5>>.
+
+=== Plantage applicatif
+
+Un programme Node s'arrête en général pour deux raisons :
+
+. la *pile d'exécution est terminée* et il n'y a plus rien à exécuter ;
+. une *erreur s'est produite* et n'a pas été capturée.
+
+C'est souvent le cas lorsqu'une erreur se produit dans un endroit imprévu de notre code, lorsqu'une variable inexistante est appelée dans une branche de notre code appelée de manière asynchrone etc.
+
+C'est une *bonne chose* que le programme s'arrête car cela nous permet de repérer l'erreur, de lire la trace et d'éventuellement patcher notre programme pour éviter cette même erreur dans le futur.
+
+Quand un programme s'arrête de manière imprévue, le `process` émet un événement `uncaughtException`.
+Il existe des cas où il est intéressant de l'écouter, notamment si la route d'un serveur cause une erreur et que l'on souhaite maintenir le service disponible malgré tout.
+
+Dans ce cas, il convient d'écouter cet événement et de déterminer quelle est la meilleure action à suivre :
+
+[source,javascript]
+.server-crash.js
+----
+include::{sourceDir}/server-crash.js[]
+----
+<1> En cas de réception d'une requête HTTP sur le port `4001`, nous allons parser l'URL appélée — sauf qu'une _typo_ s'est glissée (`reb` au lieu de `req`) et provoquera une exception ;
+<2> Cette exception remontera jusqu'au niveau du `process` qui déclenchera l'événement `uncaughtException` ;
+<3> Une seconde après voir lancé le script, une requête HTTP est envoyée au serveur, entrainant l'exécution du _point 1_.
+
+Encore une fois, *il vaut mieux qu'un programme plante* plutôt que de le protéger faiblement avec `uncaughtException`.
+
+Il se peut qu'un aucun code ne capture une erreur dans une <<primitive-promise,promesse>>.
+C'est notamment le cas s'il n'y a aucun appel à `.catch()` après un `.then()`.
+
+L'événement du `process` `unhandledRejection` est alors émis, sans pour autant faire planter le programme.
+Ce comportement est toutefois amené à être modifié dans Node v8.
+Il conviendrait alors de gérer le plantage d'un programme avec l'événement `uncaughtException` de la même manière que vous le feriez avec `uncaughtException`.
+
 
 == Node, JavaScript et ECMAScript
 
@@ -604,7 +808,7 @@ Ce résumé des primitives et fonctionnalités principales d'_ECMAScript_ a pour
 
 ==== String
 
-Chaque élément d'une chaîne de caractère est encodé au format UTF-16 et peut donc contenir 16 bits de données.
+Chaque élément d'une chaîne de caractères est encodé au format UTF-16 et peut donc contenir 16 bits de données.
 
 L'opérateur `typeof` permet d'identifier une chaîne :
 
@@ -664,7 +868,7 @@ On peut remplacer les occurrences correspondantes à un masque de caractères vi
 <1> Retourne `'I love JavaScript'` ;
 <2> Retourne `'i ♥ javascript'`.
 
-Les _template literals_ servent à composer des chaînes de caractère multilignes et/ou contenant des expressions ECMAScript :
+Les _template literals_ servent à composer des chaînes de caractères multilignes et/ou contenant des expressions ECMAScript :
 
 [source,javascript]
 .primivite-template-literals.js
@@ -733,7 +937,7 @@ parseFloat('2.10');   // <2>
 [TIP]
 .[RemarquePreTitre]#FAQ# Le second argument de parseInt
 ====
-Le second argument de la fonction `parseInt` indique dans quelle base la valeur est représentée dans la chaîne. La base décimale (10) est la plus souvent utilisée, mais il est également possible de convertir une chaîne représentant un nombre binaire (base 2) ou héxadécimal (base 16).
+Le second argument de la fonction `parseInt` indique dans quelle base la valeur est représentée dans la chaîne. La base décimale (10) est la plus souvent utilisée, mais il est également possible de convertir une chaîne représentant un nombre binaire (base 2) ou hexadécimal (base 16).
 ====
 
 La méthode `isNaN` permet d'être sûr de ne pas manipuler un nombre indésirable :
@@ -820,7 +1024,7 @@ La méthode `join` permet de concaténer tous les éléments d'un tableau avec l
 ----
 include::{sourceDir}/primitives/array-from.js[]
 ----
-<1> Retourne `[ 'c', 'a', 'm', 'e', 'm', 'b', 'e', 'r', 't' ] ;
+<1> Retourne `[ 'c', 'a', 'm', 'e', 'm', 'b', 'e', 'r', 't' ]` ;
 <2> Retourne `[ 1, 'b', 3, 'd' ]` ;
 <3> Retourne `[ 1, 'b', 3, 'd' ]`.
 
@@ -919,7 +1123,7 @@ Cela affecte les fonctions itératives et peut se révéler problématique si vo
 
 ----
 const a = [1,, 3, undefined, null];
-coonst print = (value) => console.log(value);
+const print = (value) => console.log(value);
 
 a.length;         // <1>
 a.forEach(print); // <2>
@@ -933,7 +1137,7 @@ a.forEach(print); // <2>
 
 Dans ECMAScript, tout est objet. C'est le _prototype_ qui détermine le comportement dudit objet.
 Les objets peuvent être créés de manière littérale, avec la fonction `Object.create` ou via un constructeur. +
-À la différence d'un `Array`, il est possible de nommer une clé par une chaîne de caractère – statique ou dynamique – ou avec un <<primitive-symbol,symbole>>.
+À la différence d'un `Array`, il est possible de nommer une clé par une chaîne de caractères – statique ou dynamique – ou avec un <<primitive-symbol,symbole>>.
 
 [source,javascript]
 .primitives/object.js
@@ -981,9 +1185,9 @@ include::{sourceDir}/primitives/object-getters.js[]
 ----
 <1> Nous définissons de nouvelles propriétés pour l'objet `book` ;
 <2> Définition d'un _mutateur_ pour la propriété `date_published` ;
-<3> La valeur `date` est convertie en objet et stockée dans la propriété `_date_published` ;
+<3> La valeur `date` est convertie en objet et stockée dans la propriété `_published_at` ;
 <4> Définition d'un _accesseur_ pour la propriété `date_published` ;
-<5> Appel du _mutateur_ qui, en interne, convertit la chaîne de caractère en objet `Date` ;
+<5> Appel du _mutateur_ qui, en interne, convertit la chaîne de caractères en objet `Date` ;
 <6> Appel de l'_accesseur_ et affiche `true` car il s'agit bien d'une instance de `Date` ;
 <7> Lance une exception car la chaîne assignée n'est pas une date valide.
 
@@ -1007,7 +1211,7 @@ Reprenons l'exemple précédent :
 include::{sourceDir}/primitives/object-getters-shorthand.js[]
 ----
 <1> Définition _raccourcie_ du _mutateur_ pour la propriété `date_published` ;
-<2> Définition _raccourcie_ de l'_accesseur_ pour la proriété `year_published` – notez qu'on ne définit pas de _mutateur_ cette même propriété ;
+<2> Définition _raccourcie_ de l'_accesseur_ pour la propriété `year_published` – notez qu'on ne définit pas de _mutateur_ pour cette même propriété ;
 <3> Lance une _exception_ car la propriété `year_published` est définie en tant qu'_accesseur_ uniquement ; on ne peut donc pas lui _assigner_ de valeur.
 
 `Object.assign` étend des structures existantes et la définition de valeurs par défaut.
@@ -1125,7 +1329,7 @@ Une syntaxe abrégée est disponible via les fonctions fléchées :
 |=========
 
 Il est possible de composer des fonctions à partir d'autres fonctions en utilisant la méthode `bind`.
-Ce _pattern_ est extrêmement puissante car il permet de modifier le contexte d'exécution de ladite fonction.
+Ce _pattern_ est extrêmement puissant car il permet de modifier le contexte d'exécution de ladite fonction.
 
 [source,javascript]
 .primitives/function-bind.js
@@ -1172,7 +1376,7 @@ include::{sourceDir}/primitives/rest.js[]
 <3> Affiche `[ { name: 'Cabécou' }, { name: 'Chaource' } ]` –
 
 En bref, ils sont l'équivalent de l'ancienne variable _magique_ `arguments` mais avec une meilleure finesse quant aux paramètres concernés.
-Les éléments retournée par les _paramètres du reste_ interface ont aussi l'avantage d'être un véritable objet de <<primitives/array,tableau>> – `arguments` est _itérable_ mais n'est pas un tableau et ne bénéficie donc pas des méthodes de compréhension telles que `forEach`, `map`, etc.
+Les éléments retournés par les _paramètres du reste_ ont aussi l'avantage d'être un véritable objet de <<primitives/array,tableau>> – `arguments` est _itérable_ mais n'est pas un tableau et ne bénéficie donc pas des méthodes de compréhension telles que `forEach`, `map`, etc.
 
 [[primitive-map-set]]
 ==== Map et Set
@@ -1196,7 +1400,7 @@ include::{sourceDir}/primitives/set.js[]
 <4> On peut ajouter un `Set` en tant que valeur de `Set` si on le souhaite ;
 <5> À l'inverse du point 3, l'ajout multiple d'une référence à un même objet (ici, `primesArray`) ne fonctionnera pas ;
 <6> Affiche `Set { 2, 3, [ 5, 7 ], [ 5, 7 ], Set { 11, 13 }, [ 11, 13 ] }` ;
-<7> Utilise la <<primitive-destructuring,décomposition>> pour extraires les valeurs du `Set` et affiche `[ 2, 3, [ 5, 7 ], [ 5, 7 ], Set { 11, 13 }, [ 11, 13 ] ]`.
+<7> Utilise la <<primitive-destructuring,décomposition>> pour extraire les valeurs du `Set` et affiche `[ 2, 3, [ 5, 7 ], [ 5, 7 ], Set { 11, 13 }, [ 11, 13 ] ]`.
 
 `Map` offre quelques avantages à l'utilisation d'un `Object` :
 
@@ -1211,7 +1415,7 @@ include::{sourceDir}/primitives/set.js[]
 include::{sourceDir}/primitives/map.js[]
 ----
 <1> Assigne un objet en référence de `Map` vers un objet de type `Set` ;
-<2> Parcourt chaque enregistrements de `Map` et en affiche sa clé et sa valeur ;
+<2> Parcourt chaque enregistrement de `Map` et en affiche sa clé et sa valeur ;
 <3> _Ditto_ mais avec l'expression `for..of` ;
 <4> Affiche `2` car notre `Map` comporte 2 enregistrements ;
 <5> Affiche les enregistrements de la `Map` sous forme de paires `[clé, valeur]`;
@@ -1253,7 +1457,7 @@ include::{sourceDir}/class-view.js[]
 La définition de la classe `View` comporte trois fonctions :
 
 - `constructor` : le constructeur invoqué à chaque nouvelle instantiation via l'opérateur `new` ;
-- `render` : une méthode partagée par toutes les instances de `View` — équivalent à `View.prototype.render = () => ({ ... })` ;
+- `render` : une méthode partagée par toutes les instances de `View` — équivalent à `View.prototype.render = function () { ... }` ;
 - `removeDuplicates` : une méthode statique, utilisable indépendamment des instances de `View` — équivalent à `View.removeDuplicates = () => ({ ... })`.
 
 L'exemple suivant illustre le comportement de la classe `View` :
@@ -1323,7 +1527,7 @@ Les cas d'utilisation des promesses sont multiples :
 [TIP]
 .[RemarquePreTitre]#Définition# Promesse
 ====
-Une promesse est *objet retourné immédiatement* et qui exécute une fonction de résolution *une seule et _unique_ fois dans le futur*.
+Une promesse est *un objet retourné immédiatement* et qui exécute une fonction de résolution *une seule et _unique_ fois dans le futur*.
 Cette résolution peut être soit _positive_ soit _négative_.
 
 C'est un peu comme envoyer un _courrier suivi_ :
@@ -1351,7 +1555,7 @@ include::{sourceDir}/primitives/readfile-promise.js[]
 <4> Résout positivement la promesse — si le _parsing_ échoue, la promesse sera rejetée.
 
 Une instance de `Promise` expose plusieurs méthodes pour propager le statut de son exécution.
-Les plus courramment employées sont `then` et `catch`:
+Les plus couramment employées sont `then` et `catch`:
 
 - `then(onSuccess[, onError])` : fonction acceptant un _callback_ de succès et un _callback_ d'erreur (facultatif) ;
 - `catch(onError)` : fonction acceptant un _callback_ d'erreur.
@@ -1378,12 +1582,12 @@ include::{sourceDir}/primitives/promise.js[]
 <1> Création d'une `Promise` ;
 <2> Consommation du résultat et propagation d'une nouvelle promesse retournant le nombre de dépendances contenu dans le `package.json` de ce chapitre ;
 <3> Consommation du nouveau résultat ;
-<4> Cette fonction sera appelée si une erreur se déclenche en amont de la chaîne de promeses.
+<4> Cette fonction sera appelée si une erreur se déclenche en amont de la chaîne de promesses.
 
-`Promise.all` est une méthode statique de l'API _Promise_ qui retourne elle-mêm une promesse.
-Elle sera résolue positivement lorsque toutes les promesses passées en argument seront résolues ou négativement dès que l'une d'entre elles échoue.
+`Promise.all` est une méthode statique de l'API _Promise_ qui retourne elle-même une promesse.
+Elle sera résolue positivement lorsque toutes les promesses passées en argument seront résolues ou négativement dès que l'une d'entre elles échouera.
 
-Reprenons le précédent exemple pour compter _en parallèle_ les dépendences de trois fichiers `package.json` :
+Reprenons le précédent exemple pour compter _en parallèle_ les dépendances de trois fichiers `package.json` :
 
 [source,javascript]
 .primitives/promise-all.js
@@ -1396,7 +1600,7 @@ include::{sourceDir}/primitives/promise-all.js[]
 
 Usez et abusez des promesses : elles sont un des meilleurs moyens à notre disposition pour *modulariser*, *linéariser* et *clarifier le sens* du flot de notre code.
 
-Nous aborderons à nouveau les <<../chapter-03/index.adoc#pattern-promise,promesses en tant que _design pattern_>> dans le <<../chapter-03/index.adoc#,chapitre 3>>.
+Nous aborderons à nouveau les <<pattern-promise,promesses en tant que _design pattern_>> dans ce même chapitre.
 
 [TIP]
 .[RemarquePreTitre]#Lien# Guide des promesses
@@ -1478,7 +1682,7 @@ L'opérateur `instanceof` permet d'identifier une instance d'expression réguli�
 ----
 <1> Retourne `true`.
 
-La méthode `exec` permet de capturer les occurrences d'une expression régulières au sein d'une chaîne de caractères :
+La méthode `exec` permet de capturer les occurrences d'une expression régulière au sein d'une chaîne de caractères :
 
 [source,javascript]
 ----
@@ -1567,7 +1771,7 @@ catch (err) {
 <2> Retourne `5.1` ;
 <3> Affiche `Unexpected end of input` car `JSON.parse` a lancé une exception `SyntaxError`.
 
-À l'inverse, la fonction `JSON.stringify` convertit un objet natif en chaîne de caractère au format JSON :
+À l'inverse, la fonction `JSON.stringify` convertit un objet natif en chaîne de caractères au format JSON :
 
 [source,javascript]
 ----
@@ -1591,7 +1795,7 @@ Il s'agit d'une mine d'or pour comprendre les mécanismes internes du langage, l
 === Variables globales dans Node.js
 
 En plus des primitives ECMAScript, Node introduit des variables globales supplémentaires.
-Elles vous seront utiles pour faciliter le débogage ou tout simplement pour la développement et le partage de vos modules.
+Elles vous seront utiles pour faciliter le débogage ou tout simplement pour le développement et le partage de vos modules.
 
 ==== console
 
@@ -1685,7 +1889,7 @@ Ce sont trois flux (_Streams_) qui permettent d'accéder respectivement à l'ent
 Si ces noms ne vous parlent peut-être pas, c'est parce qu'ils sont directement inspirés d'UNIX.
 Ils sont directement accessibles via l'interface JavaScript de Node.
 
-Le script suivant convertit toute chaine de caractère envoyée vers l'entrée standard en lettres majuscules :
+Le script suivant convertit toute chaîne de caractères envoyée vers l'entrée standard en lettres majuscules :
 
 [source,javascript]
 .uppercase.js
@@ -1703,7 +1907,7 @@ echo "Entrée standard" | node uppercase.js <1>
 Le concept de _Streams_ sera développé petit à petit au fil de ce chapitre et dans le reste du livre.
 C'est un concept puissant mais il y a des fonctionnalités plus simples à appréhender pour débuter.
 
-Nous venons de voir que `process` est un objet contenant plusieurs attributes précieux.
+Nous venons de voir que `process` est un objet contenant plusieurs attributs précieux.
 L'héritage prototypal est utilisé pour le rendre capable d'émettre des évènements via la méthode `process.on()`.
 Cette méthode est utilisée pour écouter les évènements système et permettre à nos programmes de réagir convenablement.
 
@@ -1732,7 +1936,7 @@ node interrupt.js 3 <1>
 
 `process.title` est une API intéressante pour assigner un _titre_ de process.
 Cela concerne notamment les commandes de liste de processus actifs (comme `ls`).
-On pourrait penser que cela offre l'avantage de rendre un processus singuler et donc plus facile à repérer :
+On pourrait penser que cela offre l'avantage de rendre un processus singulier et donc plus facile à repérer :
 
 ----
 $ node
@@ -1744,9 +1948,7 @@ Le résultat lorsqu'on liste les processus :
 image::images/process-title.png[align="center",width="85%"]
 
 *Attention* toutefois car il se trouve que le résultat de ce nommage peut se révéler imprédictible en fonction des systèmes d'exploitation où le programme est exécuté.
-
-Il est recommandé de *ne pas utiliser `process.title`* et s'il y a besoin d'identifier un processus, de passer par d'autres mécanismes de gestion de processus.
-Nous aborderons ce sujet au <<../chapter-07/index.adoc#,chapitre 7 _Héberger, déployer et monitorer_>>.
+Il est donc recommandé de *ne pas utiliser `process.title`*.
 
 Pour en savoir plus sur les méthodes et fonctions disponibles, reportez-vous à la documentation en ligne du module `process` sur [URL]#https://nodejs.org/api/process.html#.
 
@@ -1875,7 +2077,7 @@ Prenons le cas de ce module :
 include::{sourceDir}/increment-module.js[]
 ----
 
-Le précédent module affichera son identifiant unique à chaque fois qu'il est _chargé_.
+Le précédent module affichera son identifiant unique à chaque fois qu'il sera _chargé_.
 Dès que la méthode `run()` de l'objet exporté sera appelée, elle incrémentera la variable privée `counter` et retournera sa nouvelle valeur.
 
 Le module suivant fait deux fois appel à `increment-module.js` et assigne le résultat dans deux variables différentes.
@@ -1953,13 +2155,13 @@ setImmediate(print('immediate'));
 ----
 <1> Affichera d'abord `immediate`… ;
 <2> … suivi de `timeout` environ 200ms plus tard… ;
-<3> … puis `interval` environ 50ms plus tard, et ce, toutes les 250ms tant que le programme ne sera pas arrêté ou que `clearTimeout` n'annule pas l'intervalle.
+<3> … puis `interval` environ 50ms plus tard, et ce, toutes les 250ms tant que le programme ne sera pas arrêté ou que `clearTimeout` n'annulera pas l'intervalle.
 
 Pour en savoir plus sur les méthodes et fonctions disponibles, reportez-vous à la documentation en ligne du module `timers` sur [URL]#https://nodejs.org/api/timers.html#.
 
 ==== _
 
-La variable globale `_` est un cas spécial.
+La variable globale `\_` est un cas spécial.
 Elle n'est prédéfinie que dans le terminal interactif (_REPL_).
 
 Cette variable _magique_ contient systématiquement le résultat de la dernière évaluation de code.
@@ -1972,249 +2174,708 @@ $ node
 6
 ----
 
-== Invoquer Node.js
+== Design patterns
 
-C'est bien beau de parler d'histoire, d'architecture et d'interpréteur mais concrètement, comment exécuter du code écrit pour Node ?
+Certains concepts de programmation sont utiles à connaître pour écrire un code plus concis, mieux organisé et davantage consistant.
 
-La plate-forme Node fournit un exécutable système : `node`. C'est lui qui digèrera votre code, préparé à l'avance ou non :
+Ils vous permettront de mieux comprendre la différence entre du code bloquant et non-bloquant, asynchrone et synchrone et comment organiser votre code de manière robuste tout en apprenant à réagir aux erreurs.
 
-- `node` invoquera le _REPL_, un interpréteur interactif ;
-- `node votre-script.js` invoquera le dit script.
+=== Code synchrone et asynchrone
 
-[[node-repl]]
-=== REPL
+Certains langages et la programmation DOM nous ont déjà habitué à gérer du code de manière asynchrone.
+De manière générale, la différence réside dans l'accès au(x) résultat(s) de nos différentes invocations.
 
-Un _REPL_ est un interpréteur interactif exécuté dans votre terminal.
-Une fois invoqué, toutes les instructions écrites dans le terminal seront interprétées dès que vous presserez la touche kbd:[ENTRÉE]
-
-L'intérêt principal d'utiliser le _REPL_ est de prototyper rapidement du code ; code que l'on pourra éventuellement sauvegarder en tapant kbd:[.+S+A+V+E+ENTRÉE].
-
-Autre exemple : vous écrivez un programme qui nécessite que l'utilisateur saisisse lui-même du code à faire interpréter par Node.
-On pourrait penser à un programme en ligne de commande éducatif ou encore à une interface web qui commanderait un _REPL_ distant.
-
-image::images/node-repl.png[align="center",width="85%"]
-
-Le _REPL_ lui-même est écrit en ECMAScript.
-Il est disponible dans le module Node natif `repl` dont la documentation est disponible à l'adresse suivante : [URL]#https://nodejs.org/api/repl.html#.
-
-[[node-exec]]
-=== Exécution de script
-
-L'exécution d'un script est très certainement l'invocation la plus classique de Node.
-
-Node tente de charger et d'exécuter le fichier mentionné en argument de l'exécutable `node`.
-Le processus Node reste actif tant que l'_Event Loop_ a des instructions à traiter dans le futur.
-
-Un certain nombre d'options sont acceptées par l'exécutable et modifient son comportement en conséquent :
-
-- `node debug votre-script.js` : active le mode débogage ;
-- `NODE_ENV=production node votre-script.js` : transmet une variable d'environnement au processus et est accessible sous la forme `process.env.NODE_ENV`.
-
-image::images/node-exec.png[align="center",width="85%"]
-
-Pour connaître l'ensemble des options disponibles de l'exécutable Node, tapez `node --help` dans votre terminal.
-Plusieurs options pourraient vous intéresser :
-
-- `-e` (ou `--eval`) : évalue du code ;
-- `-p` (ou `--print`) : évalue et affiche le code ;
-- `-r` (ou `--require`) : inclue un module ;
-- `--harmony` (ou tout sous-ensemble de type `--harmony-xx`) : active des fonctionnalités expérimentales ;
-- `--v8-options` : passe des options à la <<../chapter-01.adoc#v8,VM V8>>.
-
-L'option `-p` est idéale pour évaluer du code en une ligne et visualier un résultat :
-
-----
-$ node -p 'Date()';
-Tue Jan 24 2017 12:42:02 GMT+0100 (CET)
-
-$ FIRST_NAME='Thomas' node -p '`Bonjour ${process.env.FIRST_NAME}`'
-Bonjour Thomas
-----
-
-[[node-sh]]
-=== Script shell
-
-Une autre alternative est de créer un fichier exécutable et de spécifier Node en tant qu'interpréteur.
-C'est une opération utile pour rendre un programme accessible s'il est situé dans le `$PATH` système ou pour rendre un programme accessible lors de l'installation globale d'un _paquet npm_, entre autres.
-
-Pour qu'un fichier soit rendu exécutable, nous devons nous assurer de deux choses :
-
-. du _mode exécutable_ du fichier ;
-. de la présence de l'entête _shebang_.
-
-Il faut pour cela respectivement :
-
-. ajouter le marqueur `x` avec le programme `chmod` ;
-. démarrer le fichier par `#!<chemin vers l'interpréteur node>`.
-
-Voici le contenu d'un fichier (non suffixé avec l'extension `.js`) qui affiche les arguments passé à ce dit-script :
-
-[source,javascript]
-.print-args
-----
-include::{sourceDir}/print-args[]
-----
-<1> Demande au programme `/usr/bin/env` de retourner le chemin vers l'exécutable système `node` ;
-<2> Plus d'informations sur cette syntaxe dans la section <<primitive-destructuring,décomposition>> de ce même chapitre.
-
-Le bloc suivant rend le fichier exécutable et l'exécute avec des arguments :
-
-----
-$ chmod +x print-args
-$ ./print-args Affiche moi
-[ 'Affiche', 'moi' ]
-----
-
-Je vous invite à consulter la section <<../chapter-03/index.adoc#node-exec,Invocation Node>> du chapitre 3 pour étendre ces connaissances à la _gestion d'une application Node_.
-
-== Mon premier script Node.js : lire un fichier CSV
-
-Il est temps de passer à la pratique. +
-Surtout après autant de théorie et de concepts !
-
-La lecture et l'écriture de fichiers est une activité courante dans le développement d'une application.
-
-Node ne déroge pas à la règle en exposant des méthodes non-bloquantes d'accès au système de fichiers.
-Des méthodes bloquantes sont également fournies par praticité mais nous ne nous y intéresserons pas.
-
-=== Intentions et objectifs
-
-Que cherchons-nous à faire au travers de cet exercice ?
-
-Nous voulons un *programme exécutable* capable de lire un *fichier CSV* et d'en *afficher le contenu* de manière intelligible.
-
-Pour ce premier exercice, nous développerons tout par nous-même afin de mieux comprendre en pratiquant les concepts évoqués en amont dans cet ouvrage.
-
-Nous pouvons considérer cet exercice comme une réussite si :
-
-- nous pouvons exécuter le programme avec le fichier d'exemple ;
-- nous comprenons l'organisation et l'ordre d'exécution du code ;
-- nous comprenons comment Node exprime les erreurs via le mécanisme de _callback_ ;
-- nous comprenons quoi modifier pour impacter le comportement du programme.
-
-=== Pré-requis
-
-Nous avons besoin d'utiliser deux modules Node pour accéder au système de fichier :
-
-- `fs` : pour la lecture et l'écriture de données stockées au sein d'un système de fichiers ;
-- `path` : pour la construction de chemins d'accès d'une manière compatible avec tous les systèmes d'exploitation.
-
-Le contenu du fichier CSV est le suivant :
-
-[source]
-.data/books.csv
-----
-include::{sourceDir}/../data/books.csv[]
-----
-
-L'exécution du script se fait simplement en exécutant la commande suivante :
-
-----
-node print-csv.js
-----
-
-Le résultat attendu serait le suivant :
-
-----
-"CSS maintenables avec Sass et Compass" a été écrit par Kaelig Deloumeau-Prigent
-"Intégration Web" a été écrit par Corinne Schillinger
-"Projet responsive Web design" a été écrit par Jérémie Patonnier,Rudy Rigot
-"Javascript the Definitive Guide" a été écrit par David Flanagan
-----
-
-=== Accéder au système de fichier
-
-Itérons une première fois sur l'accès au données.
-
-
-[source,javascript]
-.print-csv.js
-----
-include::{sourceDir}/print-csv.js[]
-----
-
-Le premier bloc décrit l'assignation des modules Node `fs` et `path` vers des variables.
-Dans un cas on assigne le module entier tandis que dans le second, on n'exporte _que_ la fonction `join`.
-L'intérêt d'utiliser l'une ou l'autre des méthodes est une *question de lisibilité*.
-
-La construction du chemin vers le fichier `data/books.csv` en utilisant la méthode `join` du module `path` est une bonne habitude à prendre.
-Elle *garantit une compatibilité* de chemin d'accès avec tous les systèmes d'exploitation. +
-Ce chemin sera construit en tant que `./data/books.csv` sur les systèmes UNIX tandis qu'il sera équivalent à `.\data\books.csv` sous Windows ou encore `@.data.books/csv` sous RISC OS.
-
-La présence de `\__dirname` garantit quant à elle une construction du chemin à partir du _module courant_.
-Sans utilisation de `\__dirname`, le chemin sera construit depuis le répertoire de travail courant (`process.cwd()`).
-
-L'exécution de `fs.readFile` est asynchrone _et_ non bloquante.
-À la manière des requêtes Ajax dans les navigateurs Web, la fonction ne retourne pas de résultat mais elle exécute la fonction de _callback_ dès que la lecture est effectuée avec succès … ou qu'un problème est survenu :
-
-- le premier paramètre du _callback_ sera un objet de type `Error` en cas de problème (fichier inexistant, droit d'accès refusé, secteur disque défectueux etc.) ;
-- le second paramètre du _callback_ est un _buffer_ - une chaîne binaire ; à moins de spécifier l'encodage en tant que second argument optionnel de `fs.readFile` :
+L'exemple suivant est une démonstration de code synchrone :
 
 [source,javascript]
 ----
-const FS_OPTIONS = {
-  encoding: 'utf8'
+const date = Date.now();
+----
+
+En effet, le résultat est retourné _immédiatement_ à la suite de l'invocation de la fonction.
+La notion d'_immédiateté_ correspond en réalité à un temps variable — dans le cas de cette fonction, à quelques nano-secondes.
+
+Maintenant tentons de lire de manière asynchrone le contenu d'un fichier après s'être assuré de son existence :
+
+[source,javascript]
+.pattern/async.js
+----
+include::{sourceDir}/pattern/async.js[]
+----
+
+Puisque les méthodes `exists` et `readFile` ne retournent pas de résultat dans le même cycle d'_Event loop_, il faut bien que le résultat soit transmis d'une manière ou d'une autre.
+
+Le design pattern _callback_ est employé pour retourner le résultat et le cas échéant, une erreur.
+Ce design pattern est expliqué plus en détail dans une section suivante de ce même chapitre.
+
+Si ce code est tout à fait fonctionnel, il présente quelques inconvénients :
+
+- il n'est pas réutilisable ;
+- il est difficile de discerner _où_ manipuler le résultat attendu au premier abord ;
+- où intercepter les erreurs ? Et qu'en faire ?
+
+Ces problèmes seront amplifiés à mesure que la complexité de votre code et la profondeur des _callbacks_ augmentera.
+
+Tentons une approche plus modulaire, toujours asynchrone :
+
+[source,javascript]
+.pattern/async-reusable.js
+----
+include::{sourceDir}/pattern/async-reusable.js[]
+----
+
+La séparation entre succès et échec est désormais évidente.
+Le code est également plus lisible.
+Son abstraction en module indépendant le rend réutilisable à tout niveau dans l'application — et testable par la même occasion :
+
+[source,javascript]
+.filecontent/index.js
+----
+include::{sourceDir}/filecontent/index.js[]
+----
+
+Voyons à quoi ressemblerait ce code s'il était synchrone :
+
+[source,javascript]
+.pattern/sync.js
+----
+include::{sourceDir}/pattern/sync.js[]
+----
+
+Finalement le code n'est pas nécessairement plus clair.
+On doit activement essayer de faire la distinction entre un résultat d'une valeur _fausse_ et un résultat issu d'une erreur (système surchargé, fichier inexistant, lecture interrompue, _timeout_ etc.).
+
+Le module d'accès synchrone au contenu d'un fichier ressemblerait à ceci :
+
+[source,javascript]
+.filecontent/sync.js
+----
+include::{sourceDir}/filecontent/sync.js[]
+----
+
+Il y a légèrement moins de lignes et le gain de lisibilité n'est pas flagrant.
+
+Et d'ailleurs, puisque Node fournit des méthodes synchrones équivalentes au méthodes asynchrones, pourquoi s'embêter ? +
+Parce que l'asynchronicité est le seul moyen de ne pas bloquer le processus en délégant à l'_Event loop_ la responsabilité d'exécuter le _callback_, plus tard.
+
+*Node nous procure en réalité une API non-bloquante*.
+
+=== Code bloquant et non-bloquant
+
+Node est fréquemment acclamé pour son API asynchrone.
+Toutefois le facteur le plus important est son caractère non-bloquant.
+Mais alors, *quelle différence entre code asynchrone et code non-bloquant* ?
+
+Considérons le code suivant :
+
+[source,javascript]
+.pattern/async-fake.js
+----
+include::{sourceDir}/pattern/async-fake.js[]
+----
+
+Il ressemble en tout point à un de nos exemples précédent de code _non-bloquant_.
+Pourtant il est bloquant car le code sur lequel il repose propose certes un mécanisme de _callback_, mais exécuté dans le même cycle d'_Event loop_ :
+
+[source,javascript]
+.filecontent/async-fake.js
+----
+include::{sourceDir}/filecontent/async-fake.js[]
+----
+<1> Cette interface de fonction suggère une fonction _asynchrone_…
+<2> … tandis que cette ligne est en réalité *bloquante*.
+
+Le fait que Node explicite tout accès bloquant permet de repérer facilement ces goulots d'étrangement.
+
+Que se passe-t'il du côté de Node si le code exécuté est :
+
+- *bloquant* : aucune instruction n'est traité, on _attend_ ;
+- *non-bloquant* : le reste des instructions du même cycle d'_Event loop_ est traité et ainsi de suite.
+
+En clair, on n'exécute pas du code non-bloquant parce que c'est davantage à la mode : on exécute du code non-bloquant pour économiser du temps et traiter davantage d'instructions. +
+Par effet mécanique, à puissance CPU équivalente, un code non-bloquant pourra traiter davantage d'instructions à la seconde car il gâchera moins de temps à attendre un retour d'instruction.
+
+Ne vous fiez pas nécessairement à l'API mise à disposition par les modules employés mais vérifiez bien qu'elles emploient un minimum d'instructions bloquantes. +
+Un seul module bloquant et peu performant peut réduire à néant les performances de vos applications.
+
+=== index.js
+
+Il arrive que la modularisation de votre code nécessite l'utilisation de multiples appels à `require()` pour charger l'intégralité des modules nécessaires.
+
+Ce n'est pas un signe de mauvais code mais on peut sentir une certaine répétition dans l'exemple suivant :
+
+[source,javascript]
+----
+const Person = require('./lib/models/person.js');
+const Vehicle = require('./lib/models/vehicle.js');
+const Location = require('./lib/models/location.js');
+const Transaction = require('./lib/models/transaction.js');
+
+const rental = new Transaction({
+  // ...
+});
+
+rental.save((err, commit) => {
+  if (err) {
+    throw err;
+	}
+
+  // ...
+});
+----
+
+Nous pourrions grouper les appels aux modèles car ils appartiennent à un même domaine.
+L'exemple précédent se résumerait alors à ceci :
+
+[source,javascript]
+----
+const models = require('./lib/models');
+
+const rental = new models.Transaction({
+  // ...
+});
+----
+
+Lorsque le chemin indiqué en paramètre de la fonction `require()` est un répertoire, l'heuristique veut que Node vérifie l'existence d'un fichier `index.js` et le charge le cas échéant.
+
+Ainsi, `require('./lib/models')` est équivalent à `require('./lib/models/index.js')`.
+
+Le fichier `index.js` est quant à lui une factorisation des appels précédents :
+
+[source,javascript]
+.lib/models/index.js
+----
+'use strict';
+
+module.exports = {
+  Person: require('./person.js'),
+  Location: require('./location.js'),
+  Vehicle: require('./vehicle.js'),
+  Transaction: require('./transaction.js')
 };
-
-fs.readFile(FILENAME, FS_OPTIONS, (err, textContent) => {
-  if (err){
-    throw err;
-  }
-
-  console.log(textContent);
-});
 ----
 
-Enfin, si nous détectons une erreur, nous remontons l'exception au sein du process Node.
-Nous lui déléguons ainsi la responsabilité de son usage. +
-Cela veut dire que si un mécanisme d'interception est mis en place, il sera prévenu de cette erreur et décidera que faire.
-Sinon, Node mettra un terme au processus, tout simplement.
+Ce _pattern_ est utile pour réduire l'encombrement visuel et regrouper des modules par logique applicative.
 
-=== Traiter les données
+=== Globbing
 
-Maintenant que nous avons accédé aux données, le reste du code est de la logique ECMAScript pure, qui ne dépend d'aucune API Node :
+Le _globbing_ est un _pattern_ fréquemment employé dans le monde UNIX.
+Au lieu de nommer des fichiers un par un, le mécanisme permet de désigner des motifs de sélection, de profondeur de recherche et d'exclusion.
+
+Les motifs utilisables sont les suivants :
+
+- `*` : n'importe quelle chaîne de caractères ;
+- `**` : n'importe quel répertoire ;
+- `{js,css}` : la chaîne `js` ou `css` ;
+- `[js]` : un caractère dans l'ensemble `j` et `s` ;
+- `!(js)` : sauf la chaîne _js_.
+
+Parcourir et filtrer le contenu d'un répertoire devient un jeu d'enfant — bien plus que s'il avait fallu utiliser soi-même l'API Node `fs` à coup de `readDir` récursif.
+
+Au final, c'est ce qui est effectué mais sans que nous ayons à écrire ce code nous-même.
+
+[source,javascript]
+.pattern/glob.js
+----
+include::{sourceDir}/pattern/glob.js[]
+----
+<1> fichiers débutant par `template` ;
+<2> fichiers débutant par `template` et suffixés par `hbs` ou dont le suffixe débute par `ej` ;
+<3> fichiers débutant par `template` et dont le suffixe est précédé par les lettres `e` ou `j` ;
+<4> fichiers débutant par `template`, à l'exception de `template.jade` ;
+<5> fichiers contenus dans le répertoire `src` et suffixés par `css`, peu importe leur emplacement dans l'arborescence.
+
+[CAUTION]
+.[RemarquePreTitre]#Attention# Certains modules sont bloquants
+====
+Certains modules de _globbing_ sont bloquants, comme `globule@~0.2.0`.
+
+Méfiez-vous donc de leur API séduisante car leur performance s'en trouvera amoindrie.
+====
+
+=== Injection de module
+
+Il est tentant de créer des modules pour abstraire certaines parties de votre logique applicative.
+C'est d'autant plus pertinent si vous souhaitez partager ce code au sein d'un même projet ou entre plusieurs projets similaires.
+
+L'exemple suivant illustre la volonté de déporter la configuration d'une hypothétique application dans un module nommé `app-configure.js` :
+
+[source,javascript]
+.app.js
+----
+const app = module.exports = new AppServer();
+
+require('./app-configure.js');
+----
+
+Ce module de configuration requiert à son tour l'application pour en configurer l'objet exporté :
+
+[source,javascript]
+.app-configure.js
+----
+const app = require('./app.js');
+const ejsEngine = require('consolidate').ejs;
+
+app.set('X-Powered-By', 'ACME Corp.');
+app.set('view engine', ejsEngine);
+
+// ...
+----
+
+Cette approche pose toutefois deux problèmes :
+
+- l'inclusion cyclique — même si Node s'en sortira, on pressent une erreur de _design_ ;
+- quid de l'utilisation de ce module de configuration si l'on souhaite configurer un autre fichier que `app.js` ?
+
+L'injection de variable est un _pattern_ intéressant car il résout ce dilemme sans présenter d'inconvénient :
+
+[source,javascript]
+.app-reworked.js
+----
+const app = new App();
+
+require('./app-configure-reworked.js')(app);
+----
+
+Le module de configuration devient alors une fonction recevant l'objet applicatif en paramètre :
+
+[source,javascript]
+.app-configure-reworked.js
+----
+const ejsEngine = require('consolidate').ejs;
+
+module.exports = function(app){
+  app.set('X-Powered-By', 'ACME Corp.');
+  app.set('view engine', ejsEngine);
+
+  // ...
+};
+----
+
+Ce _pattern_ est intéressant à plus d'un titre :
+
+- il rend explicite toute dépendance ;
+- le module d'injection peut baser son comportement sur l'état des objets passés en paramètre ;
+- il n'impose qu'une seule chose : respecter la signature de la fonction d'injection.
+
+[[pattern-callback]]
+=== Callback
+
+Le _pattern_ _callback_ est très couramment employé et pour cause : il est systématiquement employé dans les API asynchrones de Node. Par exemple, pour lire un fichier :
 
 [source,javascript]
 ----
-const parseRows = (content) => String(content).split('\n');
-const parseRow = (rowContent) => rowContent.split(';');
+'use strict';
 
-fs.readFile(FILENAME, (err, binaryContent) => {
-  if (err){
-    throw err;
+const fs = require('fs');
+
+fs.readFile('path/to/file', callback(err, fileContent) {
+  if (err) { // <1>
+    // ...
   }
-
-  parseRows(binaryContent) // <1>
-    .map(parseRow)         // <2>
-    .slice(1)              // <3>
-    .forEach(row => console.log('"%s" a été écrit par %s', row[0], row[1]));
 });
 ----
-<1> Transforme le contenu du fichier en tableau de lignes ;
-<2> Éclate chaque ligne de texte en tableau de cellules ;
-<3> Supprime la première ligne d'entête.
+<1> `err` est généralement une instance de `Error`, sinon la variable est égale à `undefined` ou `null`.
 
-La syntaxe employée rend explicite l'enchaînement des opérations tout en spécialisant les actions de chaque fonction.
-Elles pourront être réutilisées et exportées plus facilement par la suite.
+Le _pattern_ implique une fonction ayant un ou plusieurs arguments ; le premier d'entre eux étant par convention un objet d'erreur. +
+Ce mécanisme permet de *signaler une erreur* ou un *résultat* de manière asynchrone.
+Cependant on se rend vite compte que la simplicité du _pattern_ cache une complexité dans la gestion des erreurs.
+Comment les déclarer ?
+Comment les intercepter ?
+Comment les propager ailleurs dans notre application ?
 
-C'est autant de temps de gagné pour un possible _refactoring_ si jamais certaines fonctions devenaient utiles dans d'autres modules de votre application.
+Forçons le trait en créant une fonction asynchrone (`messageAbbr`) faisant appel à trois autres fonctions asynchrones (`uppercaseAsync`, `splitWordsAsync` et `abbreviateAsync`) :
 
-=== Pistes d'amélioration
+[source,javascript]
+.message-abbr/index.js
+----
+include::{sourceDir}/message-abbr/index.js[]
+----
 
-Le code final est relativement élégant et lisible mais souffre de plusieurs inconvénients :
+Plusieurs remarques :
 
-- la lecture CSV n'est ni robuste ni résiliante ni flexible ;
-- il n'y a pas de possibilité de configurer le caractère de séparation de cellule ni de configurer de ligne d'entête ;
-- la manipulation d'une ligne sous forme d'un tableau peut rapidement devenir illisible en cas de nombreuses colonnes ;
-- quid de l'utilisation de ce code dans un autre contexte que celui de la ligne de commande ?
+- `process.nextTick` est utilisé pour déporter l'exécution du process principal vers l'_Event Loop_ ;
+- chaque niveau de _callback_ appellera la fonction de callback initiale avec l'objet d'erreur en premier argument ;
+- on constate que l'imbrication des fonctions rend difficilement contrôlable la possibilité d'interagir avant que l'intégralité de la chaîne soit accomplie.
 
-Enfin on notera un autre problème, celui de la _performance_.
-Le procédé actuel oblige à charger l'intégralité du fichier CSV en mémoire ainsi qu'à attendre que sa lecture soit terminée avant de démarrer le traitement et son affichage.
+L'exemple suivant repose sur les fonctions précédemment listées de `message-abbr/index.js`.
+La fonction `messageAbbr` est exécutée de trois manières différentes pour souligner plusieurs cas de figure :
 
-Ça tombe bien, d'autres personnes se sont déjà frottés à la lecture de fichiers CSV et ont mis à disposition du code réutilisable.
-Ne réinventons pas la roue et apprenons à *utiliser des modules tiers* !
+[source,javascript]
+.pattern/callback.js
+----
+include::{sourceDir}/pattern/callback.js[]
+----
+<1> _Premier appel_ : affiche la chaîne `GME` ;
+<2> _Deuxième appel_ : affiche le message d'erreur `[TypeError: message is not a String]` ;
+<3> _Troisième appel_ : affiche une exception `TypeError: Cannot read property 'toLocaleUpperCase' of null` et termine le script de manière prématurée.
 
-== Gestion des dépendances externes avec npm
+Le premier appel à `messageAbbr` se déroule dans des conditions optimales.
+La fonction de callback transmet un premier paramètre `err` équivalent à `null` et une valeur conforme aux attentes.
+
+Le deuxième appel illustre une interception maîtrisée d'un cas d'erreur.
+C'est bien `console.error(err)` qui sera interprété suite à une erreur renvoyée par la fonction `splitWordsAsync`.
+
+Le troisième et dernier appel interpelle : pourquoi le bloc `try/catch` est-il resté sans effet ?
+Pour la simple et bonne raison que `try/catch` ne fonctionne que sur du _code synchrone_. +
+L'exception n'étant pas interceptée par notre code, elle continue de remonter jusqu'au processus initial qui émet un événement `uncaughtException`, processus qui se terminera avec un code d'erreur si aucune fonction n'écoute ce dit événement `uncaughtException`.
+
+Autrement dit, un code asynchrone basé sur des _callbacks_ requiert beaucoup de précautions du fait du crash potentiel de l'application si une erreur n'est pas interceptée.
+
+Enfin, on notera que l'ordre d'affichage des deux premiers appels n'est pas nécessairement le même que l'ordre d'exécution.
+
+Le code initial peut être rendu légèrement plus lisible sans toucher à l'API de callback en utilisant la méthode `waterfall` de la bibliothèque `async` ([URL]#https://npmjs.com/async#) :
+
+[source,javascript]
+.message-abbr/waterfall.js
+----
+include::{sourceDir}/message-abbr/waterfall.js[]
+----
+
+Le mécanisme `waterfall` exécute chaque callback de manière séquentielle, en transmettant l'erreur et le résultat au callback suivant.
+
+[CAUTION]
+.[RemarquePreTitre]#Performance# Non-bloquant mais pas rapide pour autant
+====
+Vous aurez beau rendre non-bloquant la majorité de votre code, il n'en sera pas nécessairement exécuté plus rapidement.
+
+Certes votre application pourra _accepter_ davantage de sollicitation mais votre code, lui, ira à la vitesse induite par l'enchainement logique du flux de données.
+
+Le temps d'exécution des callbacks correspond à la _somme du temps d'exécution de chaque callback_. +
+Un excellent moyen pour gérer du code _asynchrone_ et _parallèle_ est le _pattern_ _promesse_, abordé dans les pages suivantes.
+====
+
+=== Event
+
+Les _callbacks_ nous permettent d'agir lorsqu'une exécution asynchrone est en mesure de nous retourner un résultat ou une erreur. +
+Leur fonctionnement est toutefois encapsulé et limité à la portée de la portion de code dans laquelle nous pouvons insérer des instructions.
+Difficile donc d'exposer notre logique applicative en dehors de ces _callbacks_.
+
+Les événements nous offrent un tel mécanisme d'exposition, en permettant la connexion de plusieurs écouteurs (_listeners_).
+Plusieurs composants indépendants peuvent alors utiliser les résultats pour leurs propres besoins.
+
+Il s'agit d'un _pattern_ particulièrement intéressant pour adresser ces besoins :
+
+- gérer des cas de figure ayant trait à une progression ;
+- gérer des cas de figure plus complexes qu'une logique binaire de réussite ou d'échec ;
+- séparer la logique d'exécution d'un résultat unique (éviter de mettre tous les _callbacks_ dans le même panier dirait-on…);
+- transmettre des résultats au travers de plusieurs couches applicatives (un émetteur, plusieurs récepteurs).
+
+Dans l'exemple suivant, nous allons réutiliser la fonction `messageAbbr` développée dans la précédente section _callbacks_.
+Cette fois-ci, nous allons exécuter des _opérations synchrones et asynchrones_ en _callback_ de la fonction `messageAbbr` :
+
+[source,javascript]
+.pattern/callback-naive.js
+----
+include::{sourceDir}/pattern/callback-naive.js[]
+----
+
+Les fonctions `logData`, `logPerformance` et `storeData` sont exécutées en cas de succès du _callback_ de `messageAbbr`. +
+Mais que se passe-t-il si une de ces trois fonctions génère une erreur ? Et si l'une d'entre elles s'exécute de manière asynchrone ? Comment faire remonter l'erreur en dehors de `messageAbbr` ?
+
+Retravaillons le précédent exemple pour explorer une approche événementielle :
+
+[source,javascript]
+.pattern/event.js
+----
+include::{sourceDir}/pattern/event.js[]
+----
+<1> L'utilisation de `module.exports` permet d'exposer l'émetteur d'événement à d'autres modules, par exemple `require('./pattern/events').on('data', ...)`.
+
+La fonction `messageAbbr` retourne désormais une instance de l'objet `EventEmitter` de manière synchrone.
+Des écouteurs sont branchés sur l'objet retourné et sont exécutés de manière asynchrone, lorsque leur événement respectif est émis.
+
+Observons maintenant le code source modifié de `messageAbbr` ayant permis d'exposer cette interface événementielle :
+
+[source,javascript]
+.message-abbr/evented.js
+----
+include::{sourceDir}/message-abbr/evented.js[]
+----
+
+Le seul changement se situe dans la fonction `messageAbbr` : elle retourne désormais un objet `EventEmitter`.
+Cet objet est interfacé dans les moments critiques de la fonction `waterfall` et en relaie son cycle de vie _en dehors_ de la fonction `messageAbbr`. +
+À noter que le nommage des événements est libre.
+Certains noms sont utilisés de manière conventionnelle pour identifier des actions – par exemple, `error`, `data`, `end` etc.
+
+[TIP]
+.[RemarquePreTitre]#Astuce# `emitter.setMaxListeners`
+====
+Vous pouvez brancher dix écouteurs maximum sur un émetteur.
+C'est en général un nombre suffisant mais cette limite peut être augmentée (ou réduite) si le besoin se fait sentir.
+
+[source,javascript]
+----
+include::{sourceDir}/events-setmaxlisteners.js[]
+----
+====
+
+Il est important de bien connaître et de bien comprendre ce _pattern_ car il est fréquemment employé au sein des API natives de Node et dans de nombreux modules npm.
+
+[[pattern-promise]]
+=== Promesses
+
+Le concept des promesses est extrêmement puissant pour gérer, ordonner et organiser un ou plusieurs enchaînements d'exécutions asynchrones.
+
+Il y a plusieurs enjeux dans l'organisation du code liés aux promesses :
+
+- intercepter les *erreurs* ;
+- intégrer du code *à base de _callbacks_* ;
+- *intégrer du code* qui n'est pas au courant d'être dans une promesse ;
+- *modulariser* son code ;
+- profiter de la *parallélisation*.
+
+Le fichier `message-abbr/index.js` exporte une fonction asynchrone dont l'argument final est un <<pattern-callback,callback>>.
+Une première approche pour utiliser cette fonction _comme une promesse_ serait de l'encapsuler de la manière suivante :
+
+[source,javascript]
+.pattern/promise-callback.js
+----
+include::{sourceDir}/pattern/promise-callback.js[]
+----
+
+C'est minimal mais on crée un code _fragile_ : nous devons faire en sorte que les interfaces de l'encapsulation évoluent en simultané.
+La réalité c'est que nous n'avons pas envie d'encapsuler toutes les fonctions asynchrones pour les intégrer dans des chaînes de promesses.
+
+Pour cela, une librairie comme `bluebird` ou `pify` exposent une fonction pour transformer en promesse une fonction ou un module retournant un objet de fonctions. +
+L'exemple précédent serait réécrit de la manière suivante :
+
+[source,javascript]
+.pattern/promise-promisified.js
+----
+include::{sourceDir}/pattern/promise-promisified.js[]
+----
+
+C'est tout.
+
+Explorons désormais une *gestion robuste des erreurs* : toute exception entraine la _résolution négative_ de la promesse – même si on ne fait pas appel à la fonction `reject()`.
+Il est possible de gérer les erreurs finement en ayant recourt à `.catch()`.
+
+[source,javascript]
+.pattern/promise-errors.js
+----
+include::{sourceDir}/pattern/promise-errors.js[]
+----
+<1> Ce `.catch()` se déclenchera si `messageAbbr()` ou `logData()` génèrent une exception ;
+<2> Génère une exception — elle ne sera pas interceptée par la fonction `logErr()` située sur la même ligne ;
+<3> Ce `.catch()` affichera l'erreur générée à l'élément _précédent_ dans la chaîne de promesses ;
+<4> La fonction `messageAbbr()` génère une exception, gérée par l'élément _suivant_ dans la chaîne de promesses ;
+<5> La fonction `messageAbbr()` génère une exception, qui n'est pas interceptée – Node affiche un _warning_ dans la _sortie erreur_ : `UnhandledPromiseRejectionWarning: Unhandled promise rejection`.
+
+Ce dernier cas de figure illustre une des limitations des promesses : c'est à nous de faire attention à intercepter les erreurs.
+Celles-ci ne seront pas toutes remontées si un `.catch()` final n'est pas ajouté à la chaîne de promesses. +
+Node affichera un message d'erreur avec une trace incomplète.
+
+`Promise.all()` nous permet d'exécuter une fonction lorsque _toutes_ les promesses sont résolues.
+Détail important cependant, _toutes_ les promesses passées en argument de `Promise.all()` sont exécutées en *parallèle* :
+
+[source,javascript]
+.pattern/promise-multiple.js
+----
+include::{sourceDir}/pattern/promise-multiple.js[]
+----
+<1> Affiche `Promesse tenue !` en premier ;
+<2> Puis affiche `[ 'H&M', 'HMS', 'GO' ]`
+
+Cette technique est plus rapide qu'un enchainement de promesses du fait de leur _exécution en parallèle_.
+Le temps d'exécution total correspond à celui de la promesse la plus lente.
+
+[TIP]
+.[RemarquePreTitre]#npm# Librairies de promesses
+====
+Des librairies de promesses ajoutent des sucres syntaxiques pour faciliter la manipulation des promesses :
+
+- [URL]#https://npmjs.com/pify#
+- [URL]#https://npmjs.com/bluebird#
+- [URL]#https://npmjs.com/when#
+- [URL]#https://npmjs.com/es6-promise# (un polyfill pour d'anciennes versions de Node et des navigateurs Web peu récents)
+====
+
+[[streams]]
+=== Streams
+
+Les _streams_ représentent un concept déjà connu par les pratiquants du monde UNIX.
+Nous avons déjà vu dans cette section qu'une opération asynchrone ne bloque pas le reste de l'exécution du programme.
+Mais les _patterns_ précédents n'adressent pas la problématique de mémoire.
+
+Prenons un exemple courant : télécharger un fichier distant et le stocker sur disque.
+
+[source,javascript]
+.streams-http-async.js
+----
+include::{sourceDir}/streams-http-async.js[]
+----
+
+Que se passe-t-il dans le précédent exemple ?
+
+1. une requête est envoyée ;
+2. la réponse arrive morceau par morceau et s'accumule en mémoire ;
+3. ce _callback_ est exécuté lorsque la lecture de données est épuisée ;
+4. les données sont écrites en un bloc sur le système de fichier local.
+
+Ça fonctionne, c'est non-bloquant mais il y a deux possibles inconvénients :
+
+1. on exécute les actions de téléchargement et d'écriture de manière séquentielle ; on accumule le temps d'attente de chaque _callback_ ;
+2. l'intégralité des données doit être stockée en mémoire.
+
+Les _streams_ servent très précisément à résoudre ces inconvénients.
+Rectifions notre précédent exemple :
+
+[source,javascript]
+.streams-http.js
+----
+include::{sourceDir}/streams-http.js[]
+----
+
+Que se passe-t-il dans cet exemple ?
+
+1. la requête passe un objet de type _IncomingMessage_ et qui se trouve implémenter un _ReadableStream_ ;
+2. `fs.createWriteStream` retourne un _WriteableStream_ ;
+3. la méthode `pipe()` déverse les données dans le _WritableStream_ ;
+4. le _WritableStream_ écrit sur disque au fur et à mesure de la réception des données du _ReadableStream_ ;
+5. le _ReadableStream_ termine la connexion en émettant un évènement _finish_ lorsqu'il n'y a plus de données à lire.
+
+[TIP]
+.[RemarquePreTitre]#API# Les types de _streams_
+====
+Node met à disposition plusieurs types de _streams_, chacun ayant sa propre vocation :
+
+- _ReadableStream_ : données en lecture seule ;
+- _WriteableStream_ : données en écriture seule ;
+- _DuplexStream_ : données en lecture et écriture (connexion bi-directionnelle, opérations asymétriques etc.) ;
+- _TransformStream_ : données en lecture, modifiées et émises en écriture (filtres de compression, parsing etc.) ;
+- _PassThroughStream_ : données en lecture émises à l'identique en écriture (_logging_, débogage etc.).
+====
+
+Les _streams_ sont efficaces pour transférer et modifier des données de manière constante et maitrisée, le tout avec une faible empreinte mémoire.
+
+Les opérations asynchrones à base de _callbacks_ allouent autant de mémoire que nécessaire de manière fluctuante tandis que les _streams_ ne consommeront que quelques kilo-octets de manière constante.
+
+C'est là où réside la promesse de Node : des opérations non-bloquantes et à faible empreinte mémoire.
+Il s'agit d'une combinaison gagnante si ces traitements sont multipliés et rendus simultanés en cas d'accès concurrents à l'application.
+
+Dix accès concurrents ouvrant un fichier de 10 méga-octets nécessitera au bas mot 100 méga-octets de mémoire disponible. +
+Les mêmes dix accès concurrents ouvrant ce fichier en _streaming_ nécessitera tout au plus une cinquantaine de kilo-octets de mémoire disponible.
+
+Continuons sur notre lancée et intéressons-nous à la manipulation d'un fichier JSON.
+Nous souhaitons le lire, le parser et en afficher le contenu avant de pouvoir procéder à d'autres opérations de tri ou de filtre.
+
+Voilà comment nous procéderions avec une approche classique non-bloquante :
+
+[source,javascript]
+.pattern/streams-async.js
+----
+include::{sourceDir}/pattern/streams-async.js[]
+----
+
+C'est certes non-bloquant mais nous faisons face à un problème de performance lié à la montée en charge, en relation avec la taille du fichier à charger et à parser :
+
+- `JSON.parse` doit charger l'intégralité du fichier JSON en mémoire ;
+- `JSON.parse` ne faisant pas de parsing progressif, il faudra attendre que l'intégralité du fichier soit parsé pour commencer en à manipuler le résultat.
+
+C'est peut-être acceptable dans le cas d'un simple utilitaire exécuté ponctuellement mais ce sera clairement problématique pour la montée en charge d'une application soumise à des accès concurrents : il faudra en effet multiplier la quantité de mémoire allouée par fichier par le nombre d'accès simultanés au service.
+
+En clair, ce modèle ne fonctionnera pas si vous exposez des archives de fichiers ou même plus simplement, si vous proposez des fonctions d'export requétant et renvoyant des résultats de base de données.
+
+Sur la base de notre premier essai avec les _streams_, transformons donc la lecture ponctuelle en lecture progressive :
+
+[source,javascript]
+.pattern/streams.js
+----
+include::{sourceDir}/pattern/streams.js[]
+----
+
+Que se passe-t-il lors de l'exécution de la méthode `createReadStream` :
+
+1. Node retourne une instance d'objet `ReadableStream` de manière synchrone ;
+2. vous configurez l'instance de `ReadableStream` pour choisir votre méthode de consommation de données ;
+3. l'instance de `ReadableStream` émet des événements relatifs à sa progression ;
+4. la consommation des données s'arrête lorsque vous le décidez ou lorsque l'instance de `ReadableStream` émet l'événement `end`.
+
+Recyclons notre précédent exemple avec un fichier JSON plus volumineux.
+Le fichier en question est issu de la _ressourcerie Datalocale_ ([URL]#https://www.datalocale.fr/drupal7/dataset/catalogue-datalocale#), en date du 19 mars 2014 :
+
+[source,javascript]
+.pattern/streams-large.js
+----
+include::{sourceDir}/pattern/streams-large.js[]
+----
+<1> Jette une exception `SyntaxError: Unexpected end of input`.
+
+En quoi le simple changement de la source de données peut-il affecter notre script, qui fonctionnait parfaitement dans notre exemple précédent ?
+
+Le mécanisme des _streams_ est ici mis en évidence par le volume de données contenus dans le fichier JSON (un peu plus d'un méga-octet) : seule une dizaine d'éléments ont été retournés ; le dernier étant même partiellement tronqué.
+
+En pratique, chaque _buffer_ correspond plus ou moins à 4Ko de données… mais 4Ko de données brutes. +
+La fonction `JSON.parse` devient alors inefficace car elle impose d'avoir à disposition une structure JSON finie et complète.
+
+Il nous faudrait un parseur JSON compatible avec les _streams_ ; c'est à dire qui soit capable de parser une structure JSON au fur et à mesure de sa lecture. +
+C'est exactement ce que nous propose le module npm `JSONStream` ([URL]#https://npmjs.com/JSONStream#).
+
+Notre script se transforme légèrement et nécessite l'emploi de la méthode `pipe()` sur laquelle nous nous pencherons juste après :
+
+[source,javascript]
+.pattern/streams-jsonstream.js
+----
+include::{sourceDir}/pattern/streams-jsonstream.js[]
+----
+<1> Affiche `208`.
+
+La fonction `JSONStream.parse()` retourne en réalité un nouveau _stream_ qui lit les données émises par `fs.createReadStream`. +
+Ce nouveau _stream_ a été configuré pour retourner chaque élément (`\*`) du tableau JSON. +
+Si nous avions voulu ne retourner que la propriété `resources` de chaque élément, nous aurions alors écrit `JSONStream.parse('*.resources')`.
+
+Le mécanisme de `pipe` permet de transvaser un flux de données d'un _stream_ vers un autre.
+Ce comportement est littéralement le même que l'opérateur `|` dans le monde UNIX :
+
+[source,bash]
+----
+cat /etc/networks | head -n3 | grep -i 'database'
+----
+
+Cet exemple précédent pourrait être écrit de la manière suivante avec Node (les modules npm sont fictifs et servent uniquement à illustrer le propos) :
+
+[source,javascript]
+----
+const head = require('head');
+const grep = require('stream-grep');
+const fs = require('fs');
+
+fs.createReadStream('/etc/networks')
+  .pipe(head({ count: 3 }))
+  .pipe(grep(/database/i))
+  .pipe(process.stdout);
+----
+
+Cette manipulation équivaut à une transmission de pointeur de données.
+Autrement dit, vous pouvez router un _stream_ vers plusieurs autres _streams_ sans pénaliser les ressources système !
+
+[source,javascript]
+.pattern/streams-multipipes.js
+----
+include::{sourceDir}/pattern/streams-multipipes.js[]
+----
+
+Tout comme dans notre exemple précédent `pattern/streams-jsonstream.js`, nous avons recours à l'évènement `data`.
+Le module _JSONStream_ met temporairement en mémoire la structure de données parsée avant de l'émettre.
+
+Mais cela empêche de _piper_ à nouveau.
+Pour ce faire, il faut reconstituer un _stream_… tâche ardue mais simplifiée grâce au module _event-stream_ et à ses méthodes `map` et `mapSync`. +
+Elles créent un nouveau _stream_ et écrivent dedans à chaque émission de l'évènement _data_ du _stream_ précédent.
+
+On peut ainsi diriger notre _stream_ principal vers un fichier sur disque, mais aussi vers le parseur JSON qui lui aussi est dirigé vers le disque et la sortie standard :
+
+[source,javascript]
+.pattern/streams-multipipes-es.js
+----
+include::{sourceDir}/pattern/streams-multipipes-es.js[]
+----
+
+De nombreuses API Node exposent des _streams_ : requête HTTP, serveur HTTP, lecture et écriture de fichier, cryptographie, entrée/sortie standard du processus etc.
+
+Pour être explicite : toute API vous permettra à un moment ou à un autre de manipuler des ensembles de données dont vous ne maitrisez pas la taille sans affecter les performances du système.
+
+== Bien utiliser npm au quotidien
 
 Nous avons évoqué la notion de _modules_ dans les pages précédentes.
 Il est temps de plonger plus en détails dans le sujet pour mieux comprendre une des pierres angulaires de Node.
@@ -2242,7 +2903,60 @@ $ npm --version
 4.1.1
 ----
 
-=== Installer un module
+=== Initialiser un projet Node
+
+La pierre angulaire d'un projet Node est le fichier `package.json`.
+Il décrit les composants essentiels du projet.
+Il se situe à la racine de chaque projet et contient plusieurs catégories d'informations :
+
+- *textuels* : titre, descriptions, liens et licence ;
+- *version* : une chaîne respectant le fonctionnement de _node-semver_ ([URL]#https://github.com/npm/node-semver#) ;
+- *dépendances* : emplacement du module principal et liste explicite de modules nécessaires au bon fonctionnement du projet ;
+- *actions* : commandes à exécuter lors des différentes étapes du cycle de vie du projet ;
+- *divers* : données de configuration ou utilisées par des modules Node.
+
+L'utilisation de la commande `npm init` est une bonne habitude à prendre pour débuter tout projet Node.
+À l'issue de la série de questions, le fichier `package.json` sera créé dans le répertoire courant.
+Ensuite libre à vous de le compléter avec d'autres éléments optionnels de configuration.
+
+.Exemple de questions posées lors de la séquence `npm init`
+image::images/npm-init.png[align="center",width="85%"]
+
+On peut gagner du temps en utilisant l'option `--yes` (et son raccourci `-y`) pour créer le fichier `package.json` sans avoir à répondre aux questions :
+
+----
+$ npm init -y
+----
+Que votre projet soit public ou non, il est important de renseigner les champs décrits ci-après.
+Ils indiqueront aux utilisateurs les intentions du projet ainsi que l'emplacement des ressources pour en savoir davantage à son propos ou tout simplement, pour y contribuer.
+
+[TIP]
+.[RemarquePreTitre]#Commande# `npm help json`
+====
+Le détail de chaque clé de configuration est expliqué _via_ cette commande.
+Des exemples vous permettront également de mieux comprendre leur utilité.
+
+Cette même documentation est disponible en ligne, en anglais :
+
+- [URL]#https://docs.npmjs.com/files/package.json#
+====
+
+- *name* : il s'agit de l'identifiant du module lorsqu'il est chargé via la fonction `require()`. Ce sera également l'identifiant npm si vous publiez ce module dans un registre public ou privé. Par exemple, si la propriété *name* vaut _nodebook_, le module se chargera via `require('nodebook')` et s'installera avec la commande `npm install nodebook` ;
+- *description* : une indication textuelle des objectifs et fonctionnalités du module, écrite généralement en anglais ;
+- *version* : chaîne respectant la sémantique _semver_ — par exemple `1.0.0`. Nous verrons un peu plus loin dans ce chapitre comment utiliser intelligemment cette valeur pour assurer des mises à jour tout en préservant la compatibilité descendante au sein des projets dépendants de ce module ;
+- *main* : emplacement du fichier Node chargé par défaut lors d'un appel à `require(<name>)`. S'il n'est pas spécifié, Node tentera de charger par défaut le fichier `index.js` ;
+- *repository* : objet spécifiant le type de dépôt de code ainsi que son URL. Présent essentiellement à titre informatif ;
+- *preferGlobal* : booléen indiquant si ce module a davantage vocation à être installé globalement au niveau du système ou non (`false` par défaut) ;
+- *bin* : emplacement du fichier. npm effectue un lien symbolique pour rendre `<name>` disponible en tant qu'exécutable système lors d'une installation globale ;
+- *private* : boolean spécifiant que le module ne doit pas être publié dans un registre npm (`false` par défaut) ;
+- *dependencies* : objet représentant respectivement en clé/valeur les noms/versions des modules dont le projet dépend ;
+- *engines* : objet spécifiant des contraintes de compatibilité avec la version de Node — cette valeur est exprimée selon la notation <<../chapter-01/index.adoc#semver,_semver_>>.
+
+=== Installer une application Node
+
+TBD.
+
+=== Installer un module _npm_
 
 Revenons à notre exemple précédent.
 Nous voulons un module Node permettant de parser et d'itérer facilement sur un fichier CSV sans avoir à nous soucier des cas limites.
@@ -2269,7 +2983,60 @@ include::{sourceDir}/print-csv-reloaded.js[]
 <2> configure un nouvel objet _CSV_ ;
 <3> décode le contenu initial et affiche la structure JavaScript appropriée.
 
-Nous verrons dans le chapitre suivant comment utiliser efficacement le programme `npm` pour initialiser et gérer un projet de bout en bout.
+Il est toutefois recommandé d'installer les modules localement, afin de limiter leur portée uniquement au projet tout en maintenant une dépendance explicite et gérable via le fichier _package.json_.
+
+Déroulons ensemble l'algorithme d'installation de `npm install` par le biais de cet exemple :
+
+----
+npm install --save async yargs
+----
+
+La commande précédente effectue plusieurs opérations :
+
+1. requête du registre _npmjs.com_ à propos des deux modules _async_ et _yargs_ ;
+2. si les modules existent, la version compatible la plus récente est retournée (équivalent à `npm view async version` et `npm view yargs version` — respectivement `2.1.4` et `6.6.0`) ;
+3. téléchargement et décompression des paquets dans les répertoire `node_modules/async` et `node_modules/yargs` ;
+4. introspection récursive des dépendances de ces modules et si besoin est, téléchargement et décompression dans leur répertoire _node_modules_ respectif (ici `node_modules/async/node_modules` et `node_modules/yargs/node_modules`) ;
+5. inscription de _async_ et de _yargs_ dans la configuration _dependencies_ de notre fichier `package.json`.
+
+.Exemple de résultat de la commande `npm install`
+image::images/npm-install-save.png[align="center",width="85%"]
+
+La commande npm prend soin de télécharger et de persister les dépendances, à la fois dans le répertoire _node_modules_ et dans le fichier _package.json_.
+Ce dernier contient désormais une section _dependencies_ :
+
+[source,javascript]
+.package.json
+----
+{
+  ...
+  "dependencies": {
+    "async": "^2.1.4",
+    "yargs": "^6.6.0"
+  }
+}
+----
+
+[TIP]
+.[RemarquePreTitre]#Aide# Plusieurs types de dépendances
+====
+Il existe plusieurs types de dépendances, chacune ayant sa propre utilité :
+
+- *dependencies* : dépendances utiles à un fonctionnement en production ;
+- *devDependencies* : dépendances utiles uniquement dans le cadre du développement, par exemple pour exécuter des tests ou s'assurer de la qualité du code ou encore empaqueter le projet ;
+- *optionalDependencies* : dépendances dont l'installation ne sera pas nécessairement satisfaite, notamment pour des raisons de compatibilité. En général votre code prévoira que le chargement de ces modules via `require()` pourra échouer en prévoyant le traitement des exceptions avec un `try {} catch ()` ;
+- *peerDependencies* : modules dont l'installation vous est recommandée ; pratique couramment employée dans le cas de _plugins_. +
+Par exemple, si votre projet `A` installe `gulp-webserver` en `devDependencies` et que `gulp-webserver` déclare `gulp` en `peerDependencies`, npm vous recommandera d'installer également `gulp` en tant que `devDependencies` de votre projet `A`.
+====
+Les modules installés sont désormais manipulables via la fonction `require` au sein de notre code :
+
+[source,javascript]
+----
+const async = require('async');
+const { argv } = require('yargs');
+----
+
+Maintenant que nous savons installer et sauvegarder des dépendances par le biais du fichier `package.json`, sauvegardons l'état actuel du projet avec un gestionnaire de versions.
 
 === Comprendre _npm_ et son organisation du répertoire _node_modules_
 
@@ -2328,55 +3095,182 @@ const jQueryCore = require('jquery/src/core.js');
 ----
 ====
 
-== Mon premier script Node.js : lire un fichier CSV (bis)
+=== Trouver son bonheur dans le _registre npm_
 
-Reprenons désormais notre premier module Node.
-Les intentions et objectifs demeurent identiques mais nous allons appliquer nos nouvelles connaissances quant aux modules Node.
+Le _registre npm_ ([URL]#https://npmjs.com#) fourmille de modules en tous genres.
+Ils fournissent de simples fonctions, des bibliothèques ou des _frameworks_ complets pour gérer vos accès réseau, vos bases de données, la qualité de vos projets et leur automatisation.
 
-.Résultat final
-image::images/print-csv-cli.png[align="center",width="85%"]
+La *sélection d'un module est un choix subjectif* : la qualité, la pertinence et la popularité sont corrélées sans pour autant être des critères impératifs. +
+Un module peu populaire sera-t-il moins bon pour autant ? Un module populaire est-il plus performant qu'une alternative ? Un module bien testé sera-t-il plus aisé à utiliser ?
 
-=== Invocation de la ligne de commande
+Bref, pour vous aider à choisir — et ce peu importe le contexte — voici une liste subjective de critères et leur impact sur votre processus de décision :
 
-Nous allons créer un module Node explicitement pour l'invocation dans un terminal.
-Ce module sera responsable de l'_affichage des données_ :
+- *documentation* : un fichier _README_ décrivant l'API ou une *documentation technique illustrée d'exemples* sont des exemples d'objectif de qualité aidant tant à l'utilisation qu'à la contribution du-dit module ;
+- *badge d'intégration continue* : la présence de tests est indispensable pour assurer une certaine qualité. Le badge d'intégration continue est un mécanisme supplémentaire pour démontrer l'*existence de tests* et leur *automatisation* lors de toute contribution de code ;
+- *dépendances* : l'existence de modules reposant sur un autre démontre une *marque de confiance* d'autres développeurs. Confiance suffisante dans la solidité des fondations sur lesquelles ils s'appuient pour bâtir leur propre module ;
+- *date de mise à jour* : une ou plusieurs versions majeures de Node sont-elles sorties entre temps ? Si oui, des *risques d'incompatibilité* peuvent se présenter. Certaines dépendances peuvent également être devenues obsolètes ou avoir présenté des failles de sécurité ;
+- *maintenance* : si personne ne met à jour le module alors que des contributions se présentent, cela peut se révéler bloquant, dénoter une *obsolescence* d'idée ou impliquer l'existence d'un _fork_ de ce module ;
+- *état des contributions* : les mainteneurs répondent-ils aux contributeurs ? Les contributions de code sont-elles acceptées dans des conditions légitimes ? Ou tout simplement, y'a-t-il beaucoup de déclaration de bugs en suspens ? Telles sont les indicateurs de vitalité pour estimer la gravité et la probabilité que la bibliothèque nous explose au visage lorsqu'on ne s'y attendra pas.
 
-- il sélectionne la source de données ;
-- il choisit le formatage de l'affichage des données ;
-- il embellit l'affichage en utilisant des couleurs.
+.Page npm d'un module populaire et fiable
+image::images/module-npm-ok.png[align="center",width="85%"]
 
-[code,javascript]
-.print-csv-cli.js
+.Page npm peu encourageante
+image::images/module-npm-ko.png[align="center",width="85%"]
+
+Enfin, n'oubliez pas qu'il s'agit de critères subjectifs.
+Les mainteneurs du module ne sont peut-être pas de bons communicants ou n'ont que peu d'expérience en terme de tests… ou ils n'ont tout simplement pas eu le temps. +
+N'hésitez pas à les encourager si vos expérimentations se révèlent concluantes.
+Contribuez des tests et de la documentation à hauteur de votre temps.
+Même s'il ne s'agit _que_ de cinq lignes de code, d'un exemple supplémentaire ou d'une faute d'orthographe en moins.
+
+C'est comme cela que l'écosystème s'améliore petit à petit… et que vous apprenez par la même occasion.
+
+[TIP]
+.[RemarquePreTitre]#Communauté# Des personnes de confiance
+====
+Des organisations et des individus contribuent activement à Node en mettant à disposition une large majorité de leurs créations.
+
+La liste suivante est non-exhaustive et référence des contributeurs de qualité :
+
+- substack ([URL]#https://npmjs.com/~substack#) ;
+- jshttp ([URL]#https://github.com/jshttp#) ;
+- nodejitsu ([URL]#https://github.com/nodejitsu#) ;
+- mafintosh ([URL]#https://npmjs.com/~mafintosh#) ;
+- feross ([URL]#https://npmjs.com/~feross#) ;
+- dougwilson ([URL]#https://npmjs.com/~dougwilson#) ;
+- isaacs ([URL]#https://npmjs.com/~isaacs#) ;
+- fgribreau ([URL]#https://npmjs.com/~fgribreau#) ;
+- mikeal ([URL]#https://npmjs.com/~mikeal#) ;
+- rwaldron ([URL]#https://npmjs.com/~rwaldron#).
+====
+
+=== Exécuter les tests
+
+L'écriture de tests et la vérification de la qualité de votre code sont un excellent moyen de vous assurer que de nouveaux bugs ne sont pas introduits dans votre application.
+
+Écrire des modules et les empiler sans écrire de tests revient à construire un château de carte : le moindre changement accentue le risque de propager des erreurs dans toutes les applications en dépendant.
+
+Nous verrons ultérieurement comment écrire des tests unitaires pour vos applications et votre code exécuté dans un contexte Web.
+
+À la manière du démarrage d'une application, la commande npm fournit un contexte d'exécution dédié aux tests :
+
 ----
-include::{sourceDir}/print-csv-cli.js[]
+npm test
 ----
 
-Le code est drastiquement simplifié par rapport à la version finale contenue dans `print-csv.js`.
+Cette commande effectue deux choses :
 
-Et la lecture du fichier CSV a été rendue modulaire et déléguée au module `print-csv-module.js`.
+- elle règle la variable d'environnement `NODE_ENV` à `test` ;
+- elle exécute l'instruction du script `test` déclarée dans le fichier `package.json` :
 
-=== Le module de lecture de fichier CSV
-
-Les responsabilités du module `print-csv-module.js` sont les suivantes :
-
-- exposer et _exporter_ une fonction unique et configurable ;
-- lire et appliquer une fonction pour chaque ligne du fichier CSV.
-
-De ce fait, nous avons rendu le code générique et réutilisable dans tout contexte, que ce soit en ligne de commande ou dans un autre module Node.
-
-[code,javascript]
-.print-csv-module.js
+[source]
+.package.json
 ----
-include::{sourceDir}/print-csv-module.js[]
+{
+  "name": "nodebook",
+  ...
+  "scripts": {
+    "test": "mocha tests/**/*.js"
+  },
+  "devDependencies": {
+    "mocha": "*"
+  }
+}
 ----
 
-=== Publication sur npm
+Dans cet exemple, exécuter la commande `npm test` revient à actionner l'exécutable déclaré par le module _mocha_ avec comme argument l'ensemble des fichiers JavaScript contenus dans le répertoire `tests/` de notre projet.
 
-Répondre aux questions :
+En cas de test fautif, l'exécutable de tests affichera des précisions quant à leur origine et se terminera avec un code de sortie différent de 0.
 
-- quels impacts si on publie uniquement les sources d'un module non-interprétable directement par Node
-- quel fichier déclarer dans le `main` ?
-- comment faire pour publier ? Et pour tester ?
+Ce qui signifie en jargon Unixien que vous pouvez chaîner la commande avec d'autres actions basées sur un état de réussite des tests :
+
+----
+npm test && git push
+----
+
+Cette précédente commande a deux scénarios possibles :
+
+1. `npm test` échoue et `git push` ne sera pas exécuté ;
+2. `npm test` réussit et `git push` sera exécuté.
+
+En se basant sur ce principe de chaîne, vous pouvez faire évoluer votre commande de test en quelque chose de plus poussé :
+
+[source]
+.package.json
+----
+{
+  "name": "nodebook",
+  ...
+  "scripts": {
+    "test": "npm run lint-code && npm run unit-tests",
+    "lint-code": "eslint ",
+    "unit-tests": "mocha tests/**/*.js"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "eslint": "^3.0.0"
+  }
+}
+----
+
+La commande `npm test` est alors composée de deux autres commandes personnalisées.
+Vous maintenez ainsi une lisibilité au sein de votre fichier `package.json` tout en bénéficiant d'une indépendance d'exécution de vos commandes.
+
+[[npm-outdated]]
+=== Vérifier et mettre à jour les dépendances
+
+Maintenir ses dépendances à jour est important pour deux raisons :
+
+- *colmater des bugs* qui pourraient se répercuter sur votre application ;
+- se *prémunir de faille de sécurité* mettant en danger vos données et votre système informatique.
+
+En dernier recours, vérifier la fraîcheur de ses dépendances permet de prendre connaissance de nouvelles versions majeures ou mineures dont vous pourriez bénéficier.
+
+Quoiqu'il en soit, une commande npm nous aidera une fois de plus à obtenir les informations voulues :
+
+----
+$ npm outdated
+----
+
+La lecture de sa sortie peut être déroutante au premier abord, notamment dans le cas d'un module qui n'a pas été mis à jour via `npm update` depuis un moment :
+
+.Résultats obsolètes issus de `npm outdated`
+image::images/npm-outdated.png[align="center",width="85%"]
+
+Le tableau ne liste que les dépendances considérées comme obsolètes en l'état actuel d'installation de votre projet.
+Il se peut donc que le résultat varie d'une machine à l'autre, en fonction des versions installées localement. +
+Les résultats est divisé en cinq colonnes :
+
+- *Package* : npm du paquet concerné — en jaune une dépendance qui sera satisfaite en cas de `npm update`, en rouge une dépendance qui nécessite une mise à jour manuelle ;
+- *Current* : version installée localement — _MISSING_ sera affiché si la dépendance n'est pas encore installée, _git_ indique que la dépendance est installée via git ;
+- *Wanted* : version installée après exécution de `npm update` ;
+- *Latest* : version la plus récente publiée dans le registre npm ;
+- *Location* : emplacement de la dépendance — dépendance directe ou dépendance incluse dans une autre dépendance etc.
+
+[TIP]
+.[RemarquePreTitre]#Remarque# Et si une dépendance n'est pas listée ?
+====
+Toute dépendance listée dans le fichier `package.json` mais absente du tableau est considérée comme à jour.
+====
+
+La première action à mener est de procéder à l'exécution de la commande `npm update`, puis de relancer la commande `npm outdated` :
+
+.Résultats `npm outdated` après mise à jour
+image::images/npm-outdated-wanted.png[align="center",width="85%"]
+
+Le résultat est probant : de nombreuses dépendances précédemment listées en rouge ont disparu.
+Il ne reste que trois dépendances sur lesquelles nous pouvons avoir une action directe en modifiant la version référencées dans le fichier `package.json`.
+
+Pour forcer l'installation de la version correspondant à la colonne _Latest_ de la commande `npm outdated`, il suffit d'utiliser le suffixe `@latest` lors de l'installation :
+
+----
+npm install --save-dev mocha@latest karma@latest …
+----
+
+Et ainsi de suite pour les autres dépendances de premier niveau.
+La commande `npm outdated` ne devrait pas retourner de résultats, sauf si une de vos dépendances n'est pas à jour elle-même.
+
 
 == Conclusion
 
